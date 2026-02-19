@@ -1,0 +1,126 @@
+import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
+import { SYSTEM_PROMPT } from '../constants';
+import { MediaData } from '../types';
+
+const LOCAL_STORAGE_KEY = 'vmax_gemini_api_key';
+
+// Initialize with environment variable if available, otherwise check localStorage
+let apiKey = process.env.API_KEY || '';
+
+if (!apiKey && typeof localStorage !== 'undefined') {
+  apiKey = localStorage.getItem(LOCAL_STORAGE_KEY) || '';
+}
+
+let aiClient: GoogleGenAI | null = null;
+let chatSession: Chat | null = null;
+
+export const setApiKey = (key: string) => {
+  apiKey = key;
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(LOCAL_STORAGE_KEY, key);
+  }
+  // Reset client and session to ensure new key is used
+  aiClient = null;
+  chatSession = null;
+};
+
+export const hasApiKey = () => {
+  return !!apiKey && apiKey.length > 0;
+};
+
+const initializeClient = () => {
+  if (!aiClient && apiKey) {
+    aiClient = new GoogleGenAI({ apiKey });
+  }
+  return aiClient;
+};
+
+const getChatSession = (): Chat => {
+  const client = initializeClient();
+  if (!client) {
+    throw new Error("尚未設定 API Key。請重新整理網頁並輸入您的 Gemini API Key。");
+  }
+  
+  if (!chatSession) {
+    chatSession = client.chats.create({
+      // Updated to gemini-3-flash-preview as per latest guidelines and to avoid quota issues with experimental models
+      model: 'gemini-3-flash-preview', 
+      config: {
+        systemInstruction: SYSTEM_PROMPT,
+        temperature: 0.7, 
+        topK: 40,
+        topP: 0.95,
+      },
+    });
+  }
+  return chatSession;
+};
+
+export const resetSession = () => {
+  chatSession = null;
+};
+
+// Helper for delay
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Helper for retrying with exponential backoff
+async function withRetry<T>(fn: () => Promise<T>, retries = 3, backoff = 1000): Promise<T> {
+  try {
+    return await fn();
+  } catch (error: any) {
+    // Retry on 429 (Too Many Requests), 503 (Service Unavailable), 500 (Internal Error)
+    // Also check for "quota" in message as some errors might not have the code
+    const msg = (error.message || '').toLowerCase();
+    const isRetryable = 
+        msg.includes('429') || 
+        msg.includes('503') || 
+        msg.includes('500') ||
+        msg.includes('resource_exhausted') ||
+        msg.includes('quota') ||
+        msg.includes('overloaded');
+
+    if (retries > 0 && isRetryable) {
+      console.warn(`Gemini API Error (${msg}). Retrying in ${backoff}ms... (${retries} attempts left)`);
+      await delay(backoff);
+      return withRetry(fn, retries - 1, backoff * 2);
+    }
+    throw error;
+  }
+}
+
+export const sendMessageToGemini = async (text: string, media?: MediaData | null): Promise<string> => {
+  try {
+    const chat = getChatSession();
+    
+    let messageInput: string | any[] = text;
+
+    // If media is present, construct a multimodal message part
+    if (media) {
+      messageInput = [
+        {
+          inlineData: {
+            mimeType: media.mimeType,
+            data: media.data
+          }
+        },
+        { text: text }
+      ];
+    }
+
+    // Use withRetry to handle transient errors
+    const result: GenerateContentResponse = await withRetry(async () => {
+        return await chat.sendMessage({
+            message: messageInput
+        });
+    });
+    
+    if (result.text) {
+      return result.text;
+    } else {
+      throw new Error("Empty response from Gemini.");
+    }
+  } catch (error) {
+    console.error("Gemini API Error:", error);
+    throw error;
+  }
+};
