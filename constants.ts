@@ -590,7 +590,7 @@ Speaker_Notes: "[Brief overview of the 4 missions]"
 
 [P3] (結構視圖) | 鏡頭視角: 資訊圖表 (Infographic)
 Internal_Image_Prompt:
-Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, explicitly branching out to visual representations or labels of its specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
+Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, explicitly branching out to visual representations AND **readable Traditional Chinese text labels** of its specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
 Text: 標題 | 寫作手法 | 結構流: [段落1: 關鍵詞A/關鍵詞B] -> [段落2: 關鍵詞C/關鍵詞D]... (Must display specific keywords for every node. NO English.)
 Speaker_Notes: "[Explanation of the structure metaphor and how keywords connect]"
 
