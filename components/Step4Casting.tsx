@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Users, Table, Check, AlertCircle, Play, Info, Edit2, X, Save, Plus } from 'lucide-react';
+import { User, Users, Table, Check, AlertCircle, Play, Info, Edit2, X, Save, Plus, ArrowLeft } from 'lucide-react';
 import { CastingData, GuideCandidate } from '../types';
 import ReactMarkdown from 'react-markdown';
 
@@ -7,6 +7,7 @@ interface Step4CastingProps {
   castingResult: string;
   onConfirmCasting: (protagonistTraits: string, guide: GuideCandidate) => void;
   isLoading: boolean;
+  onBack: () => void;
 }
 
 const TONE_OPTIONS = [
@@ -18,7 +19,7 @@ const TONE_OPTIONS = [
   { code: 'G6', label: '熱血', desc: '激勵/挑戰', color: 'border-red-500/50 text-red-300 bg-red-500/10 hover:bg-red-500/20' },
 ];
 
-const Step4Casting: React.FC<Step4CastingProps> = ({ castingResult, onConfirmCasting, isLoading }) => {
+const Step4Casting: React.FC<Step4CastingProps> = ({ castingResult, onConfirmCasting, isLoading, onBack }) => {
   const [data, setData] = useState<CastingData | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
   const [protagonistTraits, setProtagonistTraits] = useState("");
@@ -357,11 +358,19 @@ const Step4Casting: React.FC<Step4CastingProps> = ({ castingResult, onConfirmCas
       </div>
 
        {/* --- CONFIRM BUTTON (STICKY FOOTER) --- */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-950/90 backdrop-blur-md border-t border-slate-800 flex justify-center z-10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)]">
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-950/90 backdrop-blur-md border-t border-slate-800 flex justify-center gap-4 z-10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)]">
+             <button
+                onClick={onBack}
+                disabled={isLoading}
+                className="px-6 py-3 text-slate-300 font-bold rounded-xl border border-slate-700 hover:bg-slate-800 transition-all flex items-center justify-center disabled:opacity-50"
+             >
+                <ArrowLeft className="mr-2" size={20} />
+                返回上一步
+             </button>
              <button
                 onClick={handleConfirm}
                 disabled={!selectedGuide || isLoading || isEditingAny}
-                className={`w-full max-w-2xl py-3 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center ${
+                className={`flex-1 max-w-xl py-3 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center ${
                     !selectedGuide || isLoading || isEditingAny
                     ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
                     : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/50'

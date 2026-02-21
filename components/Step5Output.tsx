@@ -1,30 +1,169 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Layers, FileText, CheckSquare, Database, Download, RefreshCw, Sparkles } from 'lucide-react';
+import { Layers, FileText, CheckSquare, Database, Download, RefreshCw, Sparkles, ArrowLeft, GripVertical, Settings2, Terminal } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Step5OutputProps {
   outputScript: string;
   outputWorksheet: string;
   outputAssessment: string;
   outputKb: string;
-  onGenerateModule: (type: 'worksheet' | 'assessment' | 'kb') => void;
+  outputNotebookLMGuide: string;
+  onGenerateModule: (type: 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide') => void;
   isLoading: boolean;
+  onBack: () => void;
+}
+
+type ModuleType = 'script' | 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide';
+
+const MODULE_CONFIG: Record<ModuleType, { label: string; icon: React.ElementType; shortLabel: string }> = {
+  script: { label: '原子腳本 (Core Script)', shortLabel: '原子腳本', icon: Layers },
+  worksheet: { label: '素養學習單 (Worksheet)', shortLabel: '素養學習單', icon: FileText },
+  assessment: { label: '複習講義 (Assessment)', shortLabel: '複習講義', icon: CheckSquare },
+  kb: { label: '知識庫 (Knowledge Base)', shortLabel: '知識庫', icon: Database },
+  notebooklm_guide: { label: 'NotebookLM 操作指南', shortLabel: '操作指南', icon: Terminal },
+};
+
+// Sortable Item Component
+function SortableItem({ id, active }: { id: ModuleType; active: boolean }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : 1,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const config = MODULE_CONFIG[id];
+  const Icon = config.icon;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center p-4 rounded-xl border mb-3 select-none ${
+        active 
+          ? 'bg-emerald-900/20 border-emerald-500/50' 
+          : 'bg-slate-800 border-slate-700 hover:border-slate-600'
+      }`}
+    >
+      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-2 mr-2 text-slate-500 hover:text-slate-300">
+        <GripVertical size={20} />
+      </div>
+      <div className={`p-2 rounded-lg mr-4 ${active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>
+        <Icon size={20} />
+      </div>
+      <div className="flex-1">
+        <h3 className={`font-medium ${active ? 'text-emerald-300' : 'text-slate-200'}`}>{config.label}</h3>
+        <p className="text-xs text-slate-500">拖曳以調整順序</p>
+      </div>
+    </div>
+  );
 }
 
 const Step5Output: React.FC<Step5OutputProps> = ({ 
     outputScript, 
     outputWorksheet, 
     outputAssessment, 
-    outputKb, 
-    onGenerateModule,
-    isLoading
+    outputKb,
+    outputNotebookLMGuide,
+    onGenerateModule, 
+    isLoading,
+    onBack
 }) => {
-  const [activeTab, setActiveTab] = useState<'script' | 'worksheet' | 'assessment' | 'kb'>('script');
+  const [activeTab, setActiveTab] = useState<ModuleType>('script');
+  const [moduleOrder, setModuleOrder] = useState<ModuleType[]>(['script', 'worksheet', 'assessment', 'kb', 'notebooklm_guide']);
+  const [isReordering, setIsReordering] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      setModuleOrder((items) => {
+        const oldIndex = items.indexOf(active.id as ModuleType);
+        const newIndex = items.indexOf(over.id as ModuleType);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const handleExportTxt = () => {
+    const parts = [];
+    
+    // Use moduleOrder to determine export sequence
+    for (const type of moduleOrder) {
+        switch (type) {
+            case 'script':
+                if (outputScript) parts.push(`=== ${MODULE_CONFIG.script.label} ===\n\n` + outputScript);
+                break;
+            case 'worksheet':
+                if (outputWorksheet) parts.push(`\n\n=== ${MODULE_CONFIG.worksheet.label} ===\n\n` + outputWorksheet);
+                break;
+            case 'assessment':
+                if (outputAssessment) parts.push(`\n\n=== ${MODULE_CONFIG.assessment.label} ===\n\n` + outputAssessment);
+                break;
+            case 'kb':
+                if (outputKb) parts.push(`\n\n=== ${MODULE_CONFIG.kb.label} ===\n\n` + outputKb);
+                break;
+            case 'notebooklm_guide':
+                if (outputNotebookLMGuide) parts.push(`\n\n=== ${MODULE_CONFIG.notebooklm_guide.label} ===\n\n` + outputNotebookLMGuide);
+                break;
+        }
+    }
+
+    if (parts.length === 0) {
+        alert("目前沒有可匯出的內容。");
+        return;
+    }
+
+    const fullContent = parts.join("\n\n" + "=".repeat(40) + "\n\n");
+    
+    const blob = new Blob([fullContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `V-MAX_Output_${new Date().toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const renderContent = () => {
       let content = "";
       let isEmpty = false;
-      let generateType: 'worksheet' | 'assessment' | 'kb' | null = null;
+      let generateType: 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide' | null = null;
       let emptyMessage = "";
 
       switch (activeTab) {
@@ -48,6 +187,12 @@ const Step5Output: React.FC<Step5OutputProps> = ({
               isEmpty = !content;
               generateType = 'kb';
               emptyMessage = "尚未生成 NotebookLM 知識庫 (Instruction 5)";
+              break;
+          case 'notebooklm_guide':
+              content = outputNotebookLMGuide;
+              isEmpty = !content;
+              generateType = 'notebooklm_guide';
+              emptyMessage = "尚未生成 NotebookLM 操作指南 (Instruction 6)";
               break;
       }
 
@@ -89,7 +234,7 @@ const Step5Output: React.FC<Step5OutputProps> = ({
       return (
            <div className="prose prose-invert prose-emerald max-w-none">
              <div className="p-4 bg-slate-900 rounded border border-slate-800 mb-4 text-xs font-mono text-slate-500 flex justify-between items-center">
-                <span>[系統訊息]: 以下為 {activeTab} 完整產出內容。</span>
+                <span>[系統訊息]: 以下為 {MODULE_CONFIG[activeTab].label} 完整產出內容。</span>
                 <span className="text-[10px] bg-slate-800 px-2 py-1 rounded">Markdown Mode</span>
              </div>
              <ReactMarkdown 
@@ -120,56 +265,92 @@ const Step5Output: React.FC<Step5OutputProps> = ({
           <span className="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">5</span>
           六大模組產出 (Big 6 Production)
         </h2>
-        <button className="flex items-center text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition-colors border border-slate-700">
-          <Download size={14} className="mr-2" />
-          匯出全部
-        </button>
+        <div className="flex gap-2">
+            <button 
+                onClick={onBack}
+                disabled={isLoading}
+                className="flex items-center text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition-colors border border-slate-700"
+            >
+                <ArrowLeft size={14} className="mr-2" />
+                返回選角
+            </button>
+            <button 
+                onClick={() => setIsReordering(!isReordering)}
+                className={`flex items-center text-xs px-3 py-1.5 rounded transition-colors border ${
+                    isReordering 
+                    ? 'bg-emerald-600 text-white border-emerald-500' 
+                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                }`}
+            >
+                <Settings2 size={14} className="mr-2" />
+                {isReordering ? '完成排序' : '調整順序'}
+            </button>
+            <button 
+                onClick={handleExportTxt}
+                className="flex items-center text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition-colors border border-slate-700"
+            >
+                <Download size={14} className="mr-2" />
+                匯出全部 (TXT)
+            </button>
+        </div>
       </div>
 
       <div className="bg-slate-800/50 rounded-xl border border-slate-700 flex-1 flex flex-col overflow-hidden">
         {/* Tabs */}
         <div className="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
-          <button
-            onClick={() => setActiveTab('script')}
-            className={`flex items-center px-4 md:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'script' ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-900/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-            }`}
-          >
-            <Layers size={16} className="mr-2" />
-            原子腳本 (Core)
-          </button>
-          <button
-             onClick={() => setActiveTab('worksheet')}
-             className={`flex items-center px-4 md:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'worksheet' ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-900/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-            }`}
-          >
-            <FileText size={16} className="mr-2" />
-            素養學習單
-          </button>
-           <button
-             onClick={() => setActiveTab('assessment')}
-             className={`flex items-center px-4 md:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'assessment' ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-900/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-            }`}
-          >
-            <CheckSquare size={16} className="mr-2" />
-            複習講義
-          </button>
-           <button
-             onClick={() => setActiveTab('kb')}
-             className={`flex items-center px-4 md:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-              activeTab === 'kb' ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-900/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-            }`}
-          >
-            <Database size={16} className="mr-2" />
-            知識庫
-          </button>
+          {moduleOrder.map((type) => {
+              const config = MODULE_CONFIG[type];
+              const Icon = config.icon;
+              return (
+                <button
+                    key={type}
+                    onClick={() => {
+                        setActiveTab(type);
+                        setIsReordering(false);
+                    }}
+                    className={`flex items-center px-4 md:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
+                    activeTab === type && !isReordering ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-900/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                >
+                    <Icon size={16} className="mr-2" />
+                    {config.shortLabel}
+                </button>
+              );
+          })}
         </div>
 
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-950">
-           {renderContent()}
+           {isReordering ? (
+               <div className="max-w-2xl mx-auto">
+                   <div className="mb-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg text-blue-200 text-sm">
+                       <p className="flex items-center font-bold mb-1">
+                           <Settings2 size={16} className="mr-2" />
+                           調整模組順序
+                       </p>
+                       <p className="opacity-80">
+                           拖曳下方項目可調整順序。此順序將影響「匯出全部」時的內容排列，以及上方分頁的顯示順序。
+                       </p>
+                   </div>
+                   
+                   <DndContext 
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragEnd={handleDragEnd}
+                   >
+                       <SortableContext 
+                          items={moduleOrder}
+                          strategy={verticalListSortingStrategy}
+                       >
+                           {moduleOrder.map((id) => (
+                               <SortableItem key={id} id={id} active={activeTab === id} />
+                           ))}
+                       </SortableContext>
+                   </DndContext>
+               </div>
+           ) : (
+               renderContent()
+           )}
         </div>
       </div>
     </div>

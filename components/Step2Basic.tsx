@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Edit2, Check, X, VenetianMask, Mic, FileType, GraduationCap, PenTool, Lightbulb, Box, ArrowRight, Quote, AlertCircle, Sparkles } from 'lucide-react';
+import { BookOpen, Edit2, Check, X, VenetianMask, Mic, FileType, GraduationCap, PenTool, Lightbulb, Box, ArrowRight, Quote, AlertCircle, Sparkles, ArrowLeft } from 'lucide-react';
 import { AnalysisData } from '../types';
 
 interface Step2BasicProps {
   analysis: string; // Basic JSON string
   onConfirmBasic: (confirmedData: AnalysisData) => void;
   isLoading: boolean;
+  onBack: () => void;
 }
 
-const Step2Basic: React.FC<Step2BasicProps> = ({ analysis, onConfirmBasic, isLoading }) => {
+const Step2Basic: React.FC<Step2BasicProps> = ({ analysis, onConfirmBasic, isLoading, onBack }) => {
   const [data, setData] = useState<AnalysisData | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
   const [editingSection, setEditingSection] = useState<'basicInfo' | 'coreVocab' | 'textbookDifficultWords' | 'idioms' | null>(null);
@@ -312,11 +313,19 @@ const Step2Basic: React.FC<Step2BasicProps> = ({ analysis, onConfirmBasic, isLoa
        </div>
 
        {/* Confirm Footer */}
-       <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-950/90 backdrop-blur-md border-t border-slate-800 flex justify-center z-10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)]">
+       <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-950/90 backdrop-blur-md border-t border-slate-800 flex justify-center gap-4 z-10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)]">
+             <button
+                onClick={onBack}
+                disabled={isLoading}
+                className="px-6 py-3 text-slate-300 font-bold rounded-xl border border-slate-700 hover:bg-slate-800 transition-all flex items-center justify-center disabled:opacity-50"
+             >
+                <ArrowLeft className="mr-2" size={20} />
+                返回上一步
+             </button>
              <button
                 onClick={() => data && onConfirmBasic(data)}
                 disabled={isEditingAny || isLoading}
-                className={`w-full max-w-2xl py-3 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center ${
+                className={`flex-1 max-w-xl py-3 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center ${
                     isEditingAny || isLoading
                     ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
                     : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/50'

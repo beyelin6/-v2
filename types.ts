@@ -2,11 +2,12 @@
 export enum AppStep {
   IDLE = 0,
   STEP_1_INPUT = 1,
-  STEP_2_BASIC = 2, // New: Basic Info & Core Vocab
-  STEP_3_DEEP = 3,  // Renamed from Analysis: Detailed Segments & Strategies
-  STEP_4_VISUALS = 4, // Was 3
-  STEP_5_CASTING = 5, // Was 4
-  STEP_6_OUTPUT = 6   // Was 5
+  STEP_2_BASIC = 2, // 2.0: Basic Info & Core Vocab
+  STEP_3_DEEP_VOCAB = 3,  // 2.5: Vocabulary Radiation (Shape-Similar, Polyphonic, Idioms)
+  STEP_3_DEEP_SEGMENTS = 4, // 2.75: Segments & Strategies
+  STEP_4_VISUALS = 5, // 3.0: Visuals
+  STEP_5_CASTING = 6, // 4.0: Casting
+  STEP_6_OUTPUT = 7   // 5.0: Output
 }
 
 export interface MediaData {
@@ -99,9 +100,9 @@ export interface AnalysisData {
   textbookDifficultWords: string[]; // NEW: Specific phrases/terms selected by teacher
   idioms: string[]; // List of idioms found or relevant
   
-  vocabulary: VocabularyItem[]; // Point 4: Radiant Database
-  segments: SegmentItem[]; // Point 5: Logical Segments
-  strategies: StrategyItem[]; // Point 7: Treasure Chest
+  vocabulary: VocabularyItem[]; // Point 4: Radiant Database (Step 2.5)
+  segments: SegmentItem[]; // Point 5: Logical Segments (Step 2.75)
+  strategies: StrategyItem[]; // Point 7: Treasure Chest (Step 2.75)
 }
 
 export interface RecStyleItem {
@@ -118,6 +119,7 @@ export interface RecMetaphorItem {
 }
 
 export interface VisualData {
+  consistencyAnalysis?: string; // NEW: Short reasoning from AI
   styles: RecStyleItem[];
   metaphors: RecMetaphorItem[];
 }
@@ -144,14 +146,18 @@ export interface CastingData {
 export interface VMaxState {
   currentStep: AppStep;
   inputText: string;
-  inputMedia: MediaData | null;
+  inputMedia: MediaData[] | null;
   
   // Step 2 Data (Basic Analysis)
   basicAnalysisResult: string;
   
-  // Step 3 Data (Deep Analysis)
-  deepAnalysisResult: string;
-  analysisData: AnalysisData | null; // Merged Data
+  // Step 2.5 Data (Deep Vocab)
+  deepVocabResult: string;
+  
+  // Step 2.75 Data (Deep Segments & Strategies)
+  deepSegmentsResult: string;
+
+  analysisData: AnalysisData | null; // Merged Data Accumulator
   
   // Step 4 Data (Visuals)
   visualResult: string;
@@ -171,6 +177,7 @@ export interface VMaxState {
   outputWorksheet: string;
   outputAssessment: string;
   outputKb: string;
+  outputNotebookLMGuide: string;
   
   isLoading: boolean;
   error: string | null;
@@ -183,21 +190,21 @@ export interface StyleOption {
 }
 
 export const VISUAL_STYLES: StyleOption[] = [
-  { code: '01', name: '熱血少年戰鬥', desc: '喚醒動機、挑戰困難概念 (Shonen Battle)' },
-  { code: '02', name: 'Vtuber 學院', desc: '線上直播、需要高互動課程 (Vtuber Academy)' },
-  { code: '03', name: '學習漫畫風', desc: '科學原理、歷史故事 (Manga Science)' },
-  { code: '04', name: '遊戲化任務地圖', desc: '課程進度總覽、章節導航 (Gamified Quest Map)' },
-  { code: '05', name: '虛擬立體書', desc: '故事敘述、歷史流程 (Digital Pop-Up Book)' },
-  { code: '10', name: '等距微縮世界', desc: '系統架構、生態系 (Isometric Tiny World)' },
-  { code: '12', name: 'Lo-Fi 讀書室', desc: '自習、閱讀引導 (Lo-Fi Study Lounge)' },
-  { code: '13', name: '拼貼誌手作感', desc: '人文社會、創意寫作 (Creative Chaos)' },
-  { code: '15', name: '玻璃擬態 UI', desc: '資訊量大的圖解 (Glassmorphism)' },
-  { code: '16', name: '吉卜力式自然風', desc: '自然科學、治癒系 (Ghibli Nature)' },
-  { code: '17', name: '卡哇伊貼紙美學', desc: '國小、生活化主題 (Kawaii Sticker)' },
-  { code: '18', name: '韓系條漫卷軸', desc: '故事性強、手機閱讀 (Webtoon Scroll)' },
-  { code: '19', name: '現代扁平向量', desc: '數學幾何、規則說明 (Modern Flat)' },
-  { code: '20', name: '溫暖色鉛筆', desc: '繪本教學、班級公約 (Colored Pencil)' },
-  { code: '21', name: '夢幻水彩渲染', desc: '國語散文、美感教育 (Watercolor Dream)' },
-  { code: '22', name: '東方水墨留白', desc: '成語故事、傳統節慶 (Ink Wash Painting)' },
-  { code: '23', name: '新海誠光影風', desc: '寫作引導、情感教育 (Shinkai Atmospheric)' },
+  { code: 'S-01', name: '熱血少年戰鬥', desc: '喚醒動機、戰場隱喻 (Shonen Battle)' },
+  { code: 'S-02', name: 'Vtuber 學院', desc: '線上直播、高互動 (Vtuber Academy)' },
+  { code: 'S-03', name: '學習漫畫風', desc: '科學原理、歷史連載 (Manga Science)' },
+  { code: 'S-04', name: '遊戲化任務地圖', desc: '課程進度、RPG地圖 (Gamified Quest Map)' },
+  { code: 'S-05', name: '虛擬立體書', desc: '故事流程、精裝書 (Digital Pop-Up Book)' },
+  { code: 'S-10', name: '等距微縮世界', desc: '系統架構、博物館模型 (Isometric Tiny World)' },
+  { code: 'S-12', name: 'Lo-Fi 讀書室', desc: '自習陪伴、深夜書房 (Lo-Fi Study Lounge)' },
+  { code: 'S-13', name: '拼貼誌手作感', desc: '創意寫作、手作雜誌 (Creative Chaos)' },
+  { code: 'S-15', name: '玻璃擬態 UI', desc: '儀表板、未來介面 (Glassmorphism)' },
+  { code: 'S-16', name: '吉卜力式自然風', desc: '自然治癒、野外 (Ghibli Nature)' },
+  { code: 'S-17', name: '卡哇伊貼紙美學', desc: '國小生活、貼紙簿 (Kawaii Sticker)' },
+  { code: 'S-18', name: '韓系條漫卷軸', desc: '手機閱讀、條漫 (Webtoon Scroll)' },
+  { code: 'S-19', name: '現代扁平向量', desc: '數學規則、App介面 (Modern Flat)' },
+  { code: 'S-20', name: '溫暖色鉛筆', desc: '輔導繪本、交換日記 (Colored Pencil)' },
+  { code: 'S-21', name: '夢幻水彩渲染', desc: '散文美感、畫廊 (Watercolor Dream)' },
+  { code: 'S-22', name: '東方水墨留白', desc: '古文歷史、卷軸 (Ink Wash Painting)' },
+  { code: 'S-23', name: '新海誠光影風', desc: '回憶引導、電影感 (Shinkai Atmospheric)' },
 ];

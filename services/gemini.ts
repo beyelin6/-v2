@@ -30,7 +30,13 @@ export const hasApiKey = () => {
 
 const initializeClient = () => {
   if (!aiClient && apiKey) {
-    aiClient = new GoogleGenAI({ apiKey });
+    // Ensure API key is clean (no whitespace, no non-ASCII if possible)
+    // The error "String contains non ISO-8859-1 code point" in headers usually comes from the API key.
+    // We trim the key and remove any non-ASCII characters to be safe.
+    const cleanKey = apiKey.trim().replace(/[^\x00-\x7F]/g, "");
+    if (cleanKey) {
+        aiClient = new GoogleGenAI({ apiKey: cleanKey });
+    }
   }
   return aiClient;
 };
@@ -60,27 +66,53 @@ export const resetSession = () => {
   chatSession = null;
 };
 
+export const isSessionActive = () => {
+  return !!chatSession;
+};
+
 // Helper for delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Helper for retrying with exponential backoff
-async function withRetry<T>(fn: () => Promise<T>, retries = 3, backoff = 1000): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, retries = 3, backoff = 2000): Promise<T> {
   try {
     return await fn();
   } catch (error: any) {
-    // Retry on 429 (Too Many Requests), 503 (Service Unavailable), 500 (Internal Error)
-    // Also check for "quota" in message as some errors might not have the code
-    const msg = (error.message || '').toLowerCase();
+    let statusCode = 0;
+    let errorMessage = '';
+
+    // Attempt to extract status and message from various error structures
+    if (error instanceof Error) {
+        errorMessage = error.message;
+    } 
+    
+    // Check for GoogleGenAI specific error structure or raw JSON response like {"error": {"code": 429, ...}}
+    if (error?.status) {
+        statusCode = error.status;
+    }
+    if (error?.error?.code) {
+        statusCode = error.error.code;
+    }
+    if (error?.error?.message) {
+        errorMessage += ' ' + error.error.message;
+    }
+    if (error?.message) {
+        errorMessage += ' ' + error.message;
+    }
+
+    const lowerMsg = errorMessage.toLowerCase();
+    
     const isRetryable = 
-        msg.includes('429') || 
-        msg.includes('503') || 
-        msg.includes('500') ||
-        msg.includes('resource_exhausted') ||
-        msg.includes('quota') ||
-        msg.includes('overloaded');
+        statusCode === 429 || 
+        statusCode === 503 || 
+        statusCode === 500 ||
+        lowerMsg.includes('429') || 
+        lowerMsg.includes('resource_exhausted') || 
+        lowerMsg.includes('quota') ||
+        lowerMsg.includes('overloaded');
 
     if (retries > 0 && isRetryable) {
-      console.warn(`Gemini API Error (${msg}). Retrying in ${backoff}ms... (${retries} attempts left)`);
+      console.warn(`Gemini API Error (Status: ${statusCode || 'unknown'}). Retrying in ${backoff}ms... (${retries} attempts left)`);
       await delay(backoff);
       return withRetry(fn, retries - 1, backoff * 2);
     }
@@ -88,21 +120,21 @@ async function withRetry<T>(fn: () => Promise<T>, retries = 3, backoff = 1000): 
   }
 }
 
-export const sendMessageToGemini = async (text: string, media?: MediaData | null): Promise<string> => {
+export const sendMessageToGemini = async (text: string, media?: MediaData[] | null): Promise<string> => {
   try {
     const chat = getChatSession();
     
     let messageInput: string | any[] = text;
 
     // If media is present, construct a multimodal message part
-    if (media) {
+    if (media && media.length > 0) {
       messageInput = [
-        {
+        ...media.map(m => ({
           inlineData: {
-            mimeType: media.mimeType,
-            data: media.data
+            mimeType: m.mimeType,
+            data: m.data
           }
-        },
+        })),
         { text: text }
       ];
     }
