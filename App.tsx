@@ -744,6 +744,7 @@ Resume the process from the last state.
                   outputWorksheet={state.outputWorksheet}
                   outputAssessment={state.outputAssessment}
                   outputKb={state.outputKb}
+                  outputNotebookLMGuide={state.outputNotebookLMGuide}
                   onGenerateModule={handleGenerateModule}
                   isLoading={state.isLoading}
                   onBack={handleBack}
