@@ -1,13 +1,15 @@
-export const VMAX_KERNEL_VERSION = "v59.0";
+// 檔案路徑: src/constants.ts
+
+export const VMAX_KERNEL_VERSION = "v59.3";
 
 export const SYSTEM_PROMPT = `
 # ROLE: V-MAX v37-Omega (Omni-Architect Engine)
-# Core: V-MAX System Master Kernel v59.0 (Single Source of Truth)
+# Core: V-MAX System Master Kernel v59.3 (Single Source of Truth)
 # Language: Traditional Chinese (Taiwan)
 
-V-MAX System Master Kernel v59.0 (The DNA & Purity Kernel / Full Detailed)
-Compatibility: V-MAX v59.0 Prompt Engine
-Last Update: 2026-02-11
+V-MAX System Master Kernel v59.3 (The DNA & Purity Kernel / Full Detailed)
+Compatibility: V-MAX v59.3 Prompt Engine
+Last Update: 2026-02-22
 ⚠️ This document is the Single Source of Truth. DO NOT SUMMARIZE.
 
 🛡️ 0️⃣ System Core Protocol (最高指導原則)
@@ -131,19 +133,19 @@ Schema:
 
 * Execution Logic:
     1.  **教學模式判定 (Teaching Mode)**:
-        *   **Mode A (Drama)**: IF text has clear Time Axis, Character Emotions, or Fiction.
-        *   **Mode B (Guide)**: IF text is Logical Deduction, Objective Facts, or Functional.
+        * **Mode A (Drama)**: IF text has clear Time Axis, Character Emotions, or Fiction.
+        * **Mode B (Guide)**: IF text is Logical Deduction, Objective Facts, or Functional.
     2.  **生字與難詞鎖定 (Vocabulary Locking)**:
-        *   **coreVocabulary (生字+認讀字)**: 
-            *   **Condition A (List Found)**: If text contains headers like "我會寫字", "生字", "認讀字", extract ALL characters found there. Do NOT filter them.
-            *   **Condition B (No List)**: If no list found, identify 10-20 NEW characters suitable for the Grade. Filter out simple particles.
-        *   **textbookDifficultWords (難詞)**: 
-            *   Extract phrases from "Word List" (語詞表/詞語解釋) if available.
-            *   Otherwise select 5-8 difficult terms from text that need explanation.
+        * **coreVocabulary (生字+認讀字)**: 
+            * **Condition A (List Found)**: If text contains headers like "我會寫字", "生字", "認讀字", extract ALL characters found there. Do NOT filter them.
+            * **Condition B (No List)**: If no list found, identify 10-20 NEW characters suitable for the Grade. Filter out simple particles.
+        * **textbookDifficultWords (難詞)**: 
+            * Extract phrases from "Word List" (語詞表/詞語解釋) if available.
+            * Otherwise select 5-8 difficult terms from text that need explanation.
     3.  **基本資訊**:
-        *   Classify Genre, Grade, Theme, and Writing Technique.
+        * Classify Genre, Grade, Theme, and Writing Technique.
     4.  **視覺建議**:
-        *   Suggest a visual metaphor (e.g. Adventure Map, Life Cycle Diagram, Burger Stack).
+        * Suggest a visual metaphor (e.g. Adventure Map, Life Cycle Diagram, Burger Stack).
 
 * STOP: Output valid JSON only.
 `;
@@ -202,14 +204,14 @@ Schema:
 }
 
 * Execution Logic:
-    *   **輻射式語文資料庫 (Radiant Database)**:
-        *   Using the CONFIRMED 'coreVocabulary' and 'idioms' from the input context:
-        *   **形近字 (Shape-Similar)**: Generate 3-5 sets based on core vocabulary.
-        *   **多音字 (Polyphonic)**: Check ALL core vocabulary for multiple pronunciations.
-        *   **成語 (Idioms) - CRITICAL**: 
-            *   **Strict Mapping**: You MUST generate a detailed vocabulary item (type: "成語") for **EVERY SINGLE IDIOM** listed in the input 'idioms' array. Do not omit any.
-            *   **Quantity**: If the input 'idioms' list contains fewer than 4 items, you MUST derive additional relevant idioms to reach a minimum of 4 items.
-            *   **Format**: Each idiom must have definition, context (real-life usage), relatives, and example.
+    * **輻射式語文資料庫 (Radiant Database)**:
+        * Using the CONFIRMED 'coreVocabulary' and 'idioms' from the input context:
+        * **形近字 (Shape-Similar)**: Generate 3-5 sets based on core vocabulary.
+        * **多音字 (Polyphonic)**: Check ALL core vocabulary for multiple pronunciations.
+        * **成語 (Idioms) - CRITICAL**: 
+            * **Strict Mapping**: You MUST generate a detailed vocabulary item (type: "成語") for **EVERY SINGLE IDIOM** listed in the input 'idioms' array. Do not omit any.
+            * **Quantity**: If the input 'idioms' list contains fewer than 4 items, you MUST derive additional relevant idioms to reach a minimum of 4 items.
+            * **Format**: Each idiom must have definition, context (real-life usage), relatives, and example.
 
 * STOP: Output valid JSON only.
 `;
@@ -254,28 +256,28 @@ Schema:
 
 * Execution Logic:
     1.  **意義段分析 (Logical Segments)**:
-        *   Break text into **3-5 Logical Segments**.
-        *   **keywords**: Extract **3-4 specific keywords (Mind Map Nodes)** representing the details/sub-points of this segment. 
-            *   *Do NOT* use broad terms like "Summary" or "Introduction". 
-            *   *USE* concrete nouns/verbs from the text (e.g., "Finding the Map", "Crossing the River").
-        *   **difficultWords**: Select relevant words from the confirmed 'textbookDifficultWords' list for each segment.
-        *   **Rhetoric & Patterns (Strict Extraction)**: 
-            *   **PRIORITY**: Look for explicit headers like "句型練習", "我會用...", "修辭技巧" in the input text. If found, prioritize these examples.
-            *   **NO OMISSION**: Extract **ALL** distinct rhetorics and sentence patterns found in the segment.
-            *   **Format**: For 'name', provide the specific technique PLUS a brief explanation (e.g., "譬喻 (將月亮比喻為玉盤)").
-            *   **Example**: MUST extract the **EXACT** sentence from the text.
-        *   **deepDive**: A probing question for student thinking.
+        * Break text into **3-5 Logical Segments**.
+        * **keywords**: Extract **3-4 specific keywords (Mind Map Nodes)** representing the details/sub-points of this segment. 
+            * *Do NOT* use broad terms like "Summary" or "Introduction". 
+            * *USE* concrete nouns/verbs from the text (e.g., "Finding the Map", "Crossing the River").
+        * **difficultWords**: Select relevant words from the confirmed 'textbookDifficultWords' list for each segment.
+        * **Rhetoric & Patterns (Strict Extraction)**: 
+            * **PRIORITY**: Look for explicit headers like "句型練習", "我會用...", "修辭技巧" in the input text. If found, prioritize these examples.
+            * **NO OMISSION**: Extract **ALL** distinct rhetorics and sentence patterns found in the segment.
+            * **Format**: For 'name', provide the specific technique PLUS a brief explanation (e.g., "譬喻 (將月亮比喻為玉盤)").
+            * **Example**: MUST extract the **EXACT** sentence from the text.
+        * **deepDive**: A probing question for student thinking.
     2.  **語文百寶箱 (Strategies)**:
-        *   Generate 3 distinct strategies (Rhetoric/Thinking/Task).
-        *   **Check Input**: Look for "語文活動" (Language Activities) sections in text as inspiration.
-        *   **Method**: Explain the tool/technique (What/How).
-        *   **Insight**: Explain why it is used here (Why).
-        *   **Application (Interaction)**: 
-            *   **CRITICAL requirement**: The application MUST explain *HOW* to apply this strategy to the *SPECIFIC TEXT*.
-            *   **Structure**: 
+        * Generate 3 distinct strategies (Rhetoric/Thinking/Task).
+        * **Check Input**: Look for "語文活動" (Language Activities) sections in text as inspiration.
+        * **Method**: Explain the tool/technique (What/How).
+        * **Insight**: Explain why it is used here (Why).
+        * **Application (Interaction)**: 
+            * **CRITICAL requirement**: The application MUST explain *HOW* to apply this strategy to the *SPECIFIC TEXT*.
+            * **Structure**: 
                 1. Context Link: "針對[特定段落/句子]..." (Explain connection to text).
                 2. Steps: "請學生: 1. [步驟1] 2. [步驟2]".
-            *   Example: "針對課文第三段的心理描寫，請學生 1. 畫出情緒詞 2. 演練語氣."
+            * Example: "針對課文第三段的心理描寫，請學生 1. 畫出情緒詞 2. 演練語氣."
 
 * STOP: Output valid JSON only.
 `;
@@ -577,122 +579,159 @@ purity_protocol:
 # Instruction 2: 原子化動態腳本
 
 == PART A: 導航 (Navigation) ==
-[P1] (封面) | 鏡頭視角: 中景
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} (Traits: {{dna_traits}}) welcoming. Context: Title Screen. Composition: Center Focus. Artistic VIS: {{style_code}}, {{material_texture}}. Safety: No text.
-Text: 標題 + 引導語 (Tone: {{tone_chip}})
-Speaker_Notes: "[Guide_Talk using Tone {{tone_chip}}]"
 
-[P2] (任務導航) | 鏡頭視角: 網格系統
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} (Traits: {{dna_traits}}) presenting Mission Map. Context: 4-5 Icons (Structure, Rhetoric, Vocab, Literacy). Composition: Flat Lay Grid. Artistic VIS: {{style_code}}. Safety: No blurry text.
-Text: 本課任務：結構探索 | 修辭解析 | 詞彙寶庫 | 素養挑戰 | 引導語: [Brief overview of the 4 missions]
-Speaker_Notes: "[Brief overview of the 4 missions]"
+### [P1] (封面)
+【鏡頭視角】: 中景
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}) welcoming. Context: Title Screen. Composition: Center Focus. Artistic VIS: {{style_code}}, {{material_texture}}. Safety: No text.
+【顯示文字】: 
+---
+標題 + 引導語 (Tone: {{tone_chip}})
+---
+【引導語/腳本】: "[Guide_Talk using Tone {{tone_chip}}]"
 
-[P3] (結構視圖) | 鏡頭視角: 資訊圖表 (Infographic)
-Internal_Image_Prompt:
-Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, branching out to **Clear Text Bubbles** containing the specific {Keywords} (⚠️ STRICTLY TEXT ONLY for keywords, NO icons/images for these details). Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
-Text: 標題 | 寫作手法 | 結構流: [段落1: 關鍵詞A/關鍵詞B] -> [段落2: 關鍵詞C/關鍵詞D]... (Must display specific keywords for every node. NO English.) | 引導語: [Explanation of the structure metaphor]
-Speaker_Notes: "[Explanation of the structure metaphor and how keywords connect]"
+### [P2] (任務導航)
+【鏡頭視角】: 網格系統
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}) presenting Mission Map. Context: 4-5 Icons (Structure, Rhetoric, Vocab, Literacy). Composition: Flat Lay Grid. Artistic VIS: {{style_code}}. Safety: No blurry text.
+【顯示文字】: 
+---
+本課任務：結構探索 | 修辭解析 | 詞彙寶庫 | 素養挑戰
+引導語: [Brief overview of the 4 missions]
+---
+【引導語/腳本】: "[Brief overview of the 4 missions]"
+
+### [P3] (結構視圖)
+【鏡頭視角】: 資訊圖表 (Infographic)
+【視覺提示詞】: Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, branching out to Clear Text Bubbles containing the specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
+【顯示文字】: 
+---
+標題 | 寫作手法
+結構流: [段落1: 關鍵詞A/關鍵詞B] -> [段落2: 關鍵詞C/關鍵詞D]... (Must display specific keywords for every node. NO English.)
+引導語: [Explanation of the structure metaphor]
+---
+【引導語/腳本】: "[Explanation of the structure metaphor and how keywords connect]"
 
 == PART B: 詳盡課文迴圈 (Detailed Text Loop) ==
 ⚠️ LOGIC: Iterate through ALL defined Meaning Segments from Step 2.5.
 ⚠️ PATTERN: [Segment Story] -> [Segment Deep Dive] -> Next Segment...
 
-[P_{N}] (意義段故事) | 鏡頭視角: 廣角 (Exhale)
-Logic: IF Mode A (Subject={{story_protagonist}}); IF Mode B (Subject={{guide_avatar}}).
-Internal_Image_Prompt:
-Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: [Segment Plot]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
-Text: 段落大意 | 難詞 (No English) | 隨文修辭 | 關鍵句型 | 引導語: [Storytelling or Analysis based on Mode]
-Speaker_Notes: "[Storytelling or Analysis based on Mode]"
+### [P_{N}] (意義段故事)
+【鏡頭視角】: 廣角 (Exhale)
+【視覺提示詞】: (Logic: IF Mode A Subject={{story_protagonist}}; IF Mode B Subject={{guide_avatar}}) Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: [Segment Plot]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
+段落大意 | 難詞 (No English)
+隨文修辭 | 關鍵句型
+引導語: [Storytelling or Analysis based on Mode]
+---
+【引導語/腳本】: "[Storytelling or Analysis based on Mode]"
 
-[P_{N+1}] (文意深究) | 鏡頭視角: 特寫 (Inhale)
-Logic: Subject: {{guide_avatar}}. Action: Analyzing.
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} (Traits: {{dna_traits}}). Context: Analyzing details. ...
-Text: 深究解析 + 提問 (Functional Guide Talk: Digging for details)
-Speaker_Notes: "[Probing question for students]"
+### [P_{N+1}] (文意深究)
+【鏡頭視角】: 特寫 (Inhale)
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}). Context: Analyzing details. Safety: No text.
+【顯示文字】: 
+---
+深究解析 + 提問 (Functional Guide Talk: Digging for details)
+---
+【引導語/腳本】: "[Probing question for students]"
 
 ... (Repeat above pattern for Segment 1 to Segment N) ...
 
-[P_Mid] (中段評量) | 鏡頭視角: 平面俯視 (Flat Lay)
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} (Traits: {{dna_traits}}) as Game Show Host waiting. Context: Game show studio or Blackboard. Composition: Flat Lay. Artistic VIS: {{style_code}}. Safety: No text.
-Text: 隨堂大挑戰 | Q1 (推論): [Question based on Text] | Q2 (提取): [Question based on Text]
-Speaker_Notes: "⚠️ [Teacher_Answer_Key]: 1. [Answer] 2. [Answer]. (Answers are HIDDEN from slide)"
+### [P_Mid] (中段評量)
+【鏡頭視角】: 平面俯視 (Flat Lay)
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}) as Game Show Host waiting. Context: Game show studio or Blackboard. Composition: Flat Lay. Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
+隨堂大挑戰
+Q1 (推論): [Question based on Text]
+Q2 (提取): [Question based on Text]
+---
+【引導語/腳本】: "⚠️ [Teacher_Answer_Key]: 1. [Answer] 2. [Answer]. (Answers are HIDDEN from slide)"
 
 == PART C: 原子語文迴圈 (Atomic Language Loop) ==
 ⚠️ LOGIC: Strict Sequential Loops. Do NOT interleave types.
-1. Loop ALL Shape-Similar Characters.
-2. Loop ALL Polyphonic Characters.
-3. Loop ALL Idioms.
-4. Final Closing Assessment.
 
 -- Sub-Loop C1: 形近字 (Shape-Similar) --
 ⚠️ GROUPING LOGIC: All characters in a shape-similar set (2, 3, or 4 chars) MUST appear on the SAME slide.
-[P_{N}] (形近字: [Target Char]) | 鏡頭視角: 分割畫面/網格 (Split Screen/Grid)
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} presenting comparison. Context: [Char A Object] vs [Char B Object] (vs [Char C]...). Composition: Split Screen (for 2) or Grid (for 3-4). Artistic VIS: {{style_code}}. Safety: No text.
-Text:
+### [P_{N}] (形近字: [Target Char])
+【鏡頭視角】: 分割畫面/網格 (Split Screen/Grid)
+【視覺提示詞】: Subject: {{guide_avatar}} presenting comparison. Context: [Char A Object] vs [Char B Object] (vs [Char C]...). Composition: Split Screen (for 2) or Grid (for 3-4). Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
 [Char A] ([Radical]) - [Word]
 [Char B] ([Radical]) - [Word]
 ... (Include all chars in the set. NO English translations.)
 Guide_Talk: "[Mnemonic linking all characters]"
 解析: [Detailed explanation of radical differences]
-Speaker_Notes: "[Detailed explanation of radical differences]"
+---
+【引導語/腳本】: "[Detailed explanation of radical differences]"
 ... (Repeat for next Shape-Similar Set) ...
 
 -- Sub-Loop C2: 多音字 (Polyphonic) --
-[P_{N}] (多音字) | 鏡頭視角: 對比/天平
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} weighing options or showing two paths. Context: [Sound A] vs [Sound B]. Composition: Symmetrical. Artistic VIS: {{style_code}}. Safety: No text.
-Text: [生字] | 讀音A (造詞) vs 讀音B (造詞) | 引導語: [Functional Explanation]
-Guide_Talk: "[Functional Explanation of Context/Pronunciation]"
+### [P_{N}] (多音字)
+【鏡頭視角】: 對比/天平
+【視覺提示詞】: Subject: {{guide_avatar}} weighing options or showing two paths. Context: [Sound A] vs [Sound B]. Composition: Symmetrical. Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
+[生字]
+讀音A (造詞) vs 讀音B (造詞)
+引導語: [Functional Explanation]
+---
+【引導語/腳本】: "[Functional Explanation of Context/Pronunciation]"
 ... (Repeat for ALL Polyphonic items) ...
 
 -- Sub-Loop C3: 成語 (Idioms) --
-[P_{N}] (成語) | 鏡頭視角: 情境演繹
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} acting out [Idiom] in a real-life scenario. Context: [Scenario Description]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
-Text: [成語] | 釋義 | 近反義 | 例句 | 引導語: [Functional Explanation]
-Guide_Talk: "[Functional Explanation of Real-life Usage]"
+### [P_{N}] (成語)
+【鏡頭視角】: 情境演繹
+【視覺提示詞】: Subject: {{guide_avatar}} acting out [Idiom] in a real-life scenario. Context: [Scenario Description]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
+[成語]
+釋義 | 近反義 | 例句
+引導語: [Functional Explanation]
+---
+【引導語/腳本】: "[Functional Explanation of Real-life Usage]"
 ... (Repeat for ALL Idiom items) ...
 
-[P_Close] (綜合評量) | 鏡頭視角: 分割畫面/票券設計
-Logic: Randomly select "Error_Hunt" (Language Logic) OR "Exit_Ticket" (Reflection).
-Internal_Image_Prompt:
-IF Error_Hunt: Subject: {{guide_avatar}} holding a 'False' sign. Context: Detective board with red strings. Composition: Split Screen.
-IF Exit_Ticket: Subject: {{guide_avatar}} stamping a ticket. Context: Airport departure gate. Composition: Ticket Design (Close Up).
-Text:
+### [P_Close] (綜合評量)
+【鏡頭視角】: 分割畫面/票券設計
+【視覺提示詞】: IF Error_Hunt: Subject: {{guide_avatar}} holding a 'False' sign. Context: Detective board. IF Exit_Ticket: Subject: {{guide_avatar}} stamping a ticket. Context: Airport. Safety: No text.
+【顯示文字】: 
+---
 IF Error_Hunt: 偵探眼考驗 | 1. [Option A] | 2. [Option B] | 3. [Option C] | 哪個是錯的？
 IF Exit_Ticket: 本堂課的登機證 | 1. 我學會的一個新觀點... | 2. 我還有的一個疑問...
-Speaker_Notes: "If Error_Hunt: ⚠️ [Teacher_Answer_Key]: The false statement is... (Hidden). If Exit_Ticket: Guide students to write down reflections."
+---
+【引導語/腳本】: "If Error_Hunt: ⚠️ [Teacher_Answer_Key]: The false statement is... (Hidden). If Exit_Ticket: Guide students to write down reflections."
 
 == PART D: 百寶箱迴圈 (Strategy Loop) ==
-⚠️ One Strategy Per Slide.
-
-[P_{Strategy_N}] (策略頁) | 鏡頭視角: 資訊圖表
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} presenting tool [Name]. Context: [Tool Visual]. Composition: Info-graphic Layout. Artistic VIS: {{style_code}}. Safety: No text.
-Text: [策略名稱] | [公式/圖解] | [微型任務] | 引導語: [Explanation of the Strategy Tool]
-Speaker_Notes: "[Explanation of the Strategy Tool + How to use it]"
-
+### [P_{Strategy_N}] (策略頁)
+【鏡頭視角】: 資訊圖表
+【視覺提示詞】: Subject: {{guide_avatar}} presenting tool [Name]. Context: [Tool Visual]. Composition: Info-graphic Layout. Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
+[策略名稱]
+[公式/圖解]
+[微型任務]
+引導語: [Explanation of the Strategy Tool]
+---
+【引導語/腳本】: "[Explanation of the Strategy Tool + How to use it]"
 ... (Iterate for all strategies) ...
 
 == PART E: 結尾 ==
-[P_{End}] (結尾) | 鏡頭視角: 廣角
-Internal_Image_Prompt:
-Subject: {{guide_avatar}} waving goodbye to the audience. Context: Closing scene. Composition: Wide. Artistic VIS: {{style_code}}. Safety: No text.
-Text: 總結 + 下課 + 引導語: [Closing remarks]
-Speaker_Notes: "[Closing remarks]"
+### [P_{End}] (結尾)
+【鏡頭視角】: 廣角
+【視覺提示詞】: Subject: {{guide_avatar}} waving goodbye to the audience. Context: Closing scene. Composition: Wide. Artistic VIS: {{style_code}}. Safety: No text.
+【顯示文字】: 
+---
+總結 + 下課
+引導語: [Closing remarks]
+---
+【引導語/腳本】: "[Closing remarks]"
 
 [SELF_CORRECTION REPORT]
 DNA一致性: 角色特徵是否跨頁鎖定？
 語言純淨度: 是否全中文 (無 English Labels)？
+結構防護: 顯示文字是否以「---」分隔獨立區塊？
 教學功能: 引導語是否解釋了部首/用法/讀音？
-詳盡檢查: 故事頁是否包含修辭/句型？
-迴圈邏輯: 是否包含中段評量(P_Mid)與綜合評量(P_Close)？
-NotebookLM驅動: 是否包含 notebooklm_driver 區塊？
 `;
 
 export const STEP_5_MATERIALS_PROMPT = `
@@ -740,36 +779,37 @@ Requirements:
 export const PROMPT_GENERATE_NOTEBOOKLM_GUIDE = `
 [INSTRUCTION]
 Please Execute STEP 6-D: NotebookLM 操作指南 (User Guide).
+Target: Provide a bullet-proof command pack for the user.
 
-Action: Generate a "NotebookLM 操作指南" for the user.
-Target: Provide copy-paste prompts for the user to use inside NotebookLM to generate Slides and Audio.
+⚠️ DYNAMIC DATA: {Guide Name: "{Guide_Name}", Tone: "{Tone_Description}", Grade: "{Grade}", Topic: "{Topic}"}
 
-⚠️ IMPORTANT: You must dynamically insert the {Guide Name}, {Tone}, {Grade}, and {Topic} from the current analysis context into the prompts below.
+# NotebookLM 萬能指令包 (V-MAX v59.3 強化版)
 
-Output Format:
-# NotebookLM 萬能指令包
+## 1. 投影片生成指令 (Slide Generation) - 深度執行模式
+請複製以下指令貼入 NotebookLM（此指令包含防覆寫協定，可避免 AI 自作聰明）：
 
-## 1. 投影片生成指令 (Slide Generation) - 強制模式
-請複製以下指令貼入 NotebookLM 對話框（此指令包含防覆寫協定，可避免 AI 自作聰明）：
-
-> 「請扮演一位嚴格的『視覺執行導演』。請依照來源文件中的 \`notebooklm_driver\` 設定，以及 \`Instruction 2: 原子化動態腳本\` 的結構，為我生成第 1 頁到第 15 頁的詳細投影片內容。
->
-> ⚠️ **最高指導原則 (Critical Protocols)**：
-> 1. **視覺絕對忠誠 (Visual Fidelity)**：請嚴格遵守 \`Internal_Image_Prompt\` 中的 \`Subject\` 描述。
->    - **禁止歷史覆寫**：即使成語典故與特定物品有關（例如『價值連城』與玉璧），若指令要求畫『花瓶』，你必須畫『花瓶』。**請勿使用你的背景知識來替換指令中的視覺物件。**
-> 2. **文字逐字鎖定 (Text Verbatim)**：投影片上的文字內容（標題、釋義、例句），必須 **100% 逐字複製** \`Text\` 欄位的內容。
->    - **禁止潤飾**：請勿修改、縮減或『優化』例句。
-> 3. **風格一致性**：請嚴格遵守 YAML 中的角色特徵與視覺風格代碼。」
+> 「你現在是 V-MAX 系統的『前端渲染引擎』。請讀取來源文件中的 \`Instruction 2: 原子化動態腳本\`，並為我生成詳細的投影片內容。
+> 
+> ⚠️ **執行硬規 (Strict Enforcement)**：
+> 1. **範本對齊**：請嚴格按照 [P1], [P2]... 的順序輸出。每一頁必須包含：【鏡頭視角】、【視覺提示詞】、【顯示文字】、【引導語/腳本】四大區塊。
+> 2. **禁止腦補**：對於 \`視覺提示詞\` (Internal_Image_Prompt) 內的描述，請勿加入任何不在指令中的歷史物件或背景知識。若指令要求畫『花瓶』，你必須畫『花瓶』。
+> 3. **文字鎖定**：\`【顯示文字】\` 欄位內的繁體中文內容，必須 **100% 逐字輸出**，嚴禁擅自修改標題、縮減例句或新增英文翻譯。
+> 4. **角色一致**：確保 {{guide_avatar}} 的視覺特徵在每一頁的 Prompt 描述中保持完全相同。」
 
 ## 2. 語音摘要設定指令 (Audio Overview)
-請複製以下指令貼入 NotebookLM 對話框：
-> 「請將這段對話設定為：一位是 **{Guide_Name}**，另一位是助教。**{Guide_Name}** 的語氣要 **{Tone_Description}**，且專門針對 **{Grade}** 的孩子進行講解。請讓 **{Guide_Name}** 主導對話，內容要根據提供的大綱，**{Topic}**，解釋修辭與生字。對話中要多使用『孩子們』、『準備好了嗎？』等課堂用語。」
+請複製以下指令貼入 NotebookLM 的 Audio Overviews：
 
-## 3. 進階技巧：若圖片仍有誤
-若 AI 仍然畫錯（例如仍畫成玉璧），請使用以下修正指令：
-> 「第 X 頁的圖片有誤。請忽略『價值連城』的歷史典故。我的指令是『花瓶 (Vase)』，請直接畫一個發光的花瓶，不要畫玉璧。」
-`;// 檔案路徑: src/constants.ts
-// ➕ 在檔案最下方加入以下 Prompt
+> 「啟動教學模式對話：
+> - 主講人：**{Guide_Name}**（角色：引導導師）。
+> - 語氣設定：**{Tone_Description}**。
+> - 目標對象：**{Grade}** 學生。
+> - 核心內容：根據來源文件的 \`【引導語/腳本】\`，針對『**{Topic}**』進行深度拆解。
+> - 互動要求：對話中必須包含對修辭技巧、生字部首的具體解釋，並使用『孩子們』、『準備好了嗎』作為課堂互動用語。」
+
+## 3. 進階技巧：強制結構修正
+若 AI 仍然沒有按照上述的四個【】區塊顯示，請直接對它說：
+> 「你的格式跑掉了。請嚴格遵守 Instruction 2 的 Markdown 結構重新輸出，文字區塊必須用 '---' 分隔，不要對內容進行任何總結或優化。」
+`;
 
 export const PROMPT_GENERATE_GAMIFIED_QUIZ = `
 [INSTRUCTION]

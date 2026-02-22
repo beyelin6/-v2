@@ -9,19 +9,20 @@
       @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
       
       :root {
-        --glass-border: rgba(255, 255, 255, 0.08);
-        --glass-bg: rgba(15, 23, 42, 0.6);
+        --glass-border: rgba(0, 0, 0, 0.08);
+        --glass-bg: rgba(255, 255, 255, 0.75);
+        --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
       }
 
       body {
         font-family: 'Noto Sans TC', sans-serif;
-        background-color: #020617; /* Slate 950 base */
+        background-color: #f8fafc; /* Slate 50 base */
         background-image: 
-          radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%), 
-          radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.15) 0px, transparent 50%),
-          radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+          radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.1) 0px, transparent 50%), 
+          radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.05) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
         background-attachment: fixed;
-        color: #e2e8f0; /* Slate 200 */
+        color: #334155; /* Slate 700 */
         overflow: hidden; /* App handles scrolling */
       }
       
@@ -38,42 +39,44 @@
         background: transparent; 
       }
       ::-webkit-scrollbar-thumb {
-        background: rgba(71, 85, 105, 0.5); 
+        background: rgba(148, 163, 184, 0.5); 
         border-radius: 10px;
-        border: 1px solid rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.5);
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: rgba(148, 163, 184, 0.8); 
+        background: rgba(100, 116, 139, 0.8); 
       }
 
       /* Custom Utilities */
       .glass-panel {
         background: var(--glass-bg);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
       }
       
       .glass-card {
-        background: rgba(30, 41, 59, 0.4);
+        background: rgba(255, 255, 255, 0.6);
         backdrop-filter: blur(8px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.04);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
       }
       
       .glass-card:hover {
-        background: rgba(30, 41, 59, 0.6);
-        border-color: rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(56, 189, 248, 0.3);
         transform: translateY(-2px);
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
       }
 
-      /* Text Glow Utilities */
+      /* Text Glow Utilities - Adjusted for Light Mode */
       .text-glow-blue {
-        text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+        text-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
       }
       .text-glow-emerald {
-        text-shadow: 0 0 15px rgba(52, 211, 153, 0.5);
+        text-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
       }
     </style>
   <script type="importmap">
