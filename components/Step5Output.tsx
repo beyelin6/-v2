@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Layers, FileText, CheckSquare, Database, Download, RefreshCw, Sparkles, ArrowLeft, GripVertical, Settings2, Terminal } from 'lucide-react';
+import { Layers, FileText, CheckSquare, Database, Download, RefreshCw, Sparkles, ArrowLeft, GripVertical, Settings2, Terminal, Gamepad2 } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -25,12 +25,13 @@ interface Step5OutputProps {
   outputAssessment: string;
   outputKb: string;
   outputNotebookLMGuide: string;
-  onGenerateModule: (type: 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide') => void;
+  outputGamifiedQuiz: string;
+  onGenerateModule: (type: 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide' | 'gamified_quiz') => void;
   isLoading: boolean;
   onBack: () => void;
 }
 
-type ModuleType = 'script' | 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide';
+type ModuleType = 'script' | 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide' | 'gamified_quiz';
 
 const MODULE_CONFIG: Record<ModuleType, { label: string; icon: React.ElementType; shortLabel: string }> = {
   script: { label: '原子腳本 (Core Script)', shortLabel: '原子腳本', icon: Layers },
@@ -38,6 +39,7 @@ const MODULE_CONFIG: Record<ModuleType, { label: string; icon: React.ElementType
   assessment: { label: '複習講義 (Assessment)', shortLabel: '複習講義', icon: CheckSquare },
   kb: { label: '知識庫 (Knowledge Base)', shortLabel: '知識庫', icon: Database },
   notebooklm_guide: { label: 'NotebookLM 操作指南', shortLabel: '操作指南', icon: Terminal },
+  gamified_quiz: { label: '遊戲化測驗 (Gamified Quiz)', shortLabel: '遊戲化測驗', icon: Gamepad2 },
 };
 
 // Sortable Item Component
@@ -91,12 +93,13 @@ const Step5Output: React.FC<Step5OutputProps> = ({
     outputAssessment, 
     outputKb,
     outputNotebookLMGuide,
+    outputGamifiedQuiz,
     onGenerateModule, 
     isLoading,
     onBack
 }) => {
   const [activeTab, setActiveTab] = useState<ModuleType>('script');
-  const [moduleOrder, setModuleOrder] = useState<ModuleType[]>(['script', 'worksheet', 'assessment', 'kb', 'notebooklm_guide']);
+  const [moduleOrder, setModuleOrder] = useState<ModuleType[]>(['script', 'worksheet', 'assessment', 'kb', 'notebooklm_guide', 'gamified_quiz']);
   const [isReordering, setIsReordering] = useState(false);
 
   const sensors = useSensors(
@@ -139,6 +142,9 @@ const Step5Output: React.FC<Step5OutputProps> = ({
             case 'notebooklm_guide':
                 if (outputNotebookLMGuide) parts.push(`\n\n=== ${MODULE_CONFIG.notebooklm_guide.label} ===\n\n` + outputNotebookLMGuide);
                 break;
+            case 'gamified_quiz':
+                if (outputGamifiedQuiz) parts.push(`\n\n=== ${MODULE_CONFIG.gamified_quiz.label} ===\n\n` + outputGamifiedQuiz);
+                break;
         }
     }
 
@@ -163,8 +169,9 @@ const Step5Output: React.FC<Step5OutputProps> = ({
   const renderContent = () => {
       let content = "";
       let isEmpty = false;
-      let generateType: 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide' | null = null;
+      let generateType: 'worksheet' | 'assessment' | 'kb' | 'notebooklm_guide' | 'gamified_quiz' | null = null;
       let emptyMessage = "";
+      let buttonLabel = "立即生成";
 
       switch (activeTab) {
           case 'script':
@@ -194,6 +201,13 @@ const Step5Output: React.FC<Step5OutputProps> = ({
               generateType = 'notebooklm_guide';
               emptyMessage = "尚未生成 NotebookLM 操作指南 (Instruction 6)";
               break;
+          case 'gamified_quiz':
+              content = outputGamifiedQuiz;
+              isEmpty = !content;
+              generateType = 'gamified_quiz';
+              emptyMessage = "尚未生成遊戲化測驗 (Instruction 7)";
+              buttonLabel = "🎮 產生 Kahoot 題庫";
+              break;
       }
 
       if (isEmpty && generateType) {
@@ -222,8 +236,8 @@ const Step5Output: React.FC<Step5OutputProps> = ({
                           </>
                       ) : (
                           <>
-                              <Sparkles size={18} className="mr-2" />
-                              立即生成
+                              {generateType === 'gamified_quiz' ? <Gamepad2 size={18} className="mr-2" /> : <Sparkles size={18} className="mr-2" />}
+                              {buttonLabel}
                           </>
                       )}
                   </button>

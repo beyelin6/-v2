@@ -170,6 +170,7 @@ function App() {
                   outputAssessment={state.outputAssessment}
                   outputKb={state.outputKb}
                   outputNotebookLMGuide={state.outputNotebookLMGuide}
+                  outputGamifiedQuiz={state.outputGamifiedQuiz}
                   onGenerateModule={handleGenerateModule}
                   isLoading={state.isLoading}
                   onBack={handleBack}

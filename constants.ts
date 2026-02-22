@@ -548,6 +548,7 @@ notebooklm_driver:
     content_layer:
       - "Main Body Text (Bullet points, max 4 lines)"
       - "Highlight Box (Definition/Rhetoric)"
+      - "Speaker_Notes (Must be visible on the slide as '引導語' or '解析')"
     audio_layer:
       - "Speaker_Notes (The Guide's script. Ensure Guide is visually present if Slide Type allows)"
 
@@ -585,13 +586,13 @@ Speaker_Notes: "[Guide_Talk using Tone {{tone_chip}}]"
 [P2] (任務導航) | 鏡頭視角: 網格系統
 Internal_Image_Prompt:
 Subject: {{guide_avatar}} (Traits: {{dna_traits}}) presenting Mission Map. Context: 4-5 Icons (Structure, Rhetoric, Vocab, Literacy). Composition: Flat Lay Grid. Artistic VIS: {{style_code}}. Safety: No blurry text.
-Text: 本課任務：結構探索 | 修辭解析 | 詞彙寶庫 | 素養挑戰
+Text: 本課任務：結構探索 | 修辭解析 | 詞彙寶庫 | 素養挑戰 | 引導語: [Brief overview of the 4 missions]
 Speaker_Notes: "[Brief overview of the 4 missions]"
 
 [P3] (結構視圖) | 鏡頭視角: 資訊圖表 (Infographic)
 Internal_Image_Prompt:
-Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, explicitly branching out to visual representations AND **readable Traditional Chinese text labels** of its specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
-Text: 標題 | 寫作手法 | 結構流: [段落1: 關鍵詞A/關鍵詞B] -> [段落2: 關鍵詞C/關鍵詞D]... (Must display specific keywords for every node. NO English.)
+Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, branching out to **Clear Text Bubbles** containing the specific {Keywords} (⚠️ STRICTLY TEXT ONLY for keywords, NO icons/images for these details). Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
+Text: 標題 | 寫作手法 | 結構流: [段落1: 關鍵詞A/關鍵詞B] -> [段落2: 關鍵詞C/關鍵詞D]... (Must display specific keywords for every node. NO English.) | 引導語: [Explanation of the structure metaphor]
 Speaker_Notes: "[Explanation of the structure metaphor and how keywords connect]"
 
 == PART B: 詳盡課文迴圈 (Detailed Text Loop) ==
@@ -602,7 +603,7 @@ Speaker_Notes: "[Explanation of the structure metaphor and how keywords connect]
 Logic: IF Mode A (Subject={{story_protagonist}}); IF Mode B (Subject={{guide_avatar}}).
 Internal_Image_Prompt:
 Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: [Segment Plot]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
-Text: 段落大意 | 難詞 (No English) | 隨文修辭 | 關鍵句型
+Text: 段落大意 | 難詞 (No English) | 隨文修辭 | 關鍵句型 | 引導語: [Storytelling or Analysis based on Mode]
 Speaker_Notes: "[Storytelling or Analysis based on Mode]"
 
 [P_{N+1}] (文意深究) | 鏡頭視角: 特寫 (Inhale)
@@ -637,6 +638,7 @@ Text:
 [Char B] ([Radical]) - [Word]
 ... (Include all chars in the set. NO English translations.)
 Guide_Talk: "[Mnemonic linking all characters]"
+解析: [Detailed explanation of radical differences]
 Speaker_Notes: "[Detailed explanation of radical differences]"
 ... (Repeat for next Shape-Similar Set) ...
 
@@ -644,7 +646,7 @@ Speaker_Notes: "[Detailed explanation of radical differences]"
 [P_{N}] (多音字) | 鏡頭視角: 對比/天平
 Internal_Image_Prompt:
 Subject: {{guide_avatar}} weighing options or showing two paths. Context: [Sound A] vs [Sound B]. Composition: Symmetrical. Artistic VIS: {{style_code}}. Safety: No text.
-Text: [生字] | 讀音A (造詞) vs 讀音B (造詞)
+Text: [生字] | 讀音A (造詞) vs 讀音B (造詞) | 引導語: [Functional Explanation]
 Guide_Talk: "[Functional Explanation of Context/Pronunciation]"
 ... (Repeat for ALL Polyphonic items) ...
 
@@ -652,7 +654,7 @@ Guide_Talk: "[Functional Explanation of Context/Pronunciation]"
 [P_{N}] (成語) | 鏡頭視角: 情境演繹
 Internal_Image_Prompt:
 Subject: {{guide_avatar}} acting out [Idiom] in a real-life scenario. Context: [Scenario Description]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
-Text: [成語] | 釋義 | 近反義 | 例句
+Text: [成語] | 釋義 | 近反義 | 例句 | 引導語: [Functional Explanation]
 Guide_Talk: "[Functional Explanation of Real-life Usage]"
 ... (Repeat for ALL Idiom items) ...
 
@@ -672,7 +674,7 @@ Speaker_Notes: "If Error_Hunt: ⚠️ [Teacher_Answer_Key]: The false statement 
 [P_{Strategy_N}] (策略頁) | 鏡頭視角: 資訊圖表
 Internal_Image_Prompt:
 Subject: {{guide_avatar}} presenting tool [Name]. Context: [Tool Visual]. Composition: Info-graphic Layout. Artistic VIS: {{style_code}}. Safety: No text.
-Text: [策略名稱] | [公式/圖解] | [微型任務]
+Text: [策略名稱] | [公式/圖解] | [微型任務] | 引導語: [Explanation of the Strategy Tool]
 Speaker_Notes: "[Explanation of the Strategy Tool + How to use it]"
 
 ... (Iterate for all strategies) ...
@@ -681,7 +683,8 @@ Speaker_Notes: "[Explanation of the Strategy Tool + How to use it]"
 [P_{End}] (結尾) | 鏡頭視角: 廣角
 Internal_Image_Prompt:
 Subject: {{guide_avatar}} waving goodbye to the audience. Context: Closing scene. Composition: Wide. Artistic VIS: {{style_code}}. Safety: No text.
-Text: 總結 + 下課
+Text: 總結 + 下課 + 引導語: [Closing remarks]
+Speaker_Notes: "[Closing remarks]"
 
 [SELF_CORRECTION REPORT]
 DNA一致性: 角色特徵是否跨頁鎖定？

@@ -178,6 +178,7 @@ export interface VMaxState {
   outputAssessment: string;
   outputKb: string;
   outputNotebookLMGuide: string;
+  outputGamifiedQuiz: string; // NEW: Gamified Quiz Output
   
   isLoading: boolean;
   error: string | null;
