@@ -19,7 +19,9 @@ Radiation: Idioms and Shape-Similar chars MUST derive from the Core.
 Structure: Text MUST be analyzed by Logical Meaning Segments (e.g., Background -> Conflict -> Resolution), NOT just physical paragraphs.
 🧬 Visual DNA Anchor (視覺 DNA 錨點)
 Logic: AI must define "Unbreakable Traits" in Instruction 1.
-Traits: Must include (Hair Style/Color, Eye Color, Fixed Accessory, Clothing Style).
+Format Rule: MUST use "Key: Value | Key: Value" format. Do NOT use conversational sentences. (e.g. "Hair: short silver | Eyes: emerald green | Top: crimson jacket").
+Color Rule: MUST use concrete colors (e.g. "navy blue" instead of "blue", "burgundy" instead of "red").
+Negative Rule: NEVER mention missing items. Do not use "no", "without" (e.g. use "bareheaded" instead of "no hat").
 Weight: DNA traits carry a 1.5x prompt weight to ensure consistency across slides.
 💮 Language Purity Protocol (語言純淨協定)
 Policy: Strict Traditional Chinese ONLY for Slide Content.
@@ -476,10 +478,16 @@ Schema:
     "name": "Name/Role (e.g. 美如奶奶 or 敘事者)",
     "gender": "Gender (e.g. Male/Female/Neutral)",
     "age": "Estimated Age (e.g. 70 years old)",
-    "traits": "Detailed visual description (Hair, Eyes, Clothes, Accessories)..."
+    "traits": "MUST use Pipe Format: 'Hair: [color+style] | Eyes: [color] | Top: [concrete color+clothing] | Bottom: [concrete color+clothing] | Accessory: [item]'. NO negative words."
   },
   "guides": [
-    { "id": "1", "name": "Name", "type": "Real", "style": "Description (matches selected style)", "tone": "G1-G6 Code" },
+    { 
+      "id": "1", 
+      "name": "Name", 
+      "type": "Real", 
+      "style": "MUST use Pipe Format: 'Hair: [color+style] | Eyes: [color] | Top: [concrete color+clothing] | Accessory: [item]'. Ensure high contrast to protagonist.", 
+      "tone": "G1-G6 Code" 
+    },
     ... (Total 6 candidates)
   ],
   "fusionTable": "Markdown table columns: [Segment Title] | [Keywords] | [Metaphor Visual Element] | [Design Logic]"
@@ -522,7 +530,8 @@ document_meta:
 
 visual_identity_system:
   visual_mode: "[Mode A / Mode B]"
-  style_code: "[Selected Style Code]"
+  # [重構] 不准只寫代碼，必須把 Style SSOT 中的完整英文咒語展開！
+  style_prompt: "[⚠️ CRITICAL: You MUST extract and paste the FULL English prompt string from the Style SSOT corresponding to the selected style. Do NOT just put 'S-23'. Example: 'Makoto Shinkai style, anime art, hyper-realistic, lens flare...']"
   
   # 🧬 視覺 DNA 錨點 (User Confirmed)
   character_dna_anchor:
@@ -591,7 +600,7 @@ purity_protocol:
 
 ### [P2] (任務導航)
 【鏡頭視角】: 網格系統
-【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}) presenting Mission Map. Context: 4-5 Icons (Structure, Rhetoric, Vocab, Literacy). Composition: Flat Lay Grid. Artistic VIS: {{style_code}}. Safety: No blurry text.
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}) presenting Mission Map. Context: 4-5 Icons (Structure, Rhetoric, Vocab, Literacy). Composition: Flat Lay Grid. Artistic VIS: {{style_prompt}}. Safety: No blurry text.
 【顯示文字】: 
 ---
 本課任務：結構探索 | 修辭解析 | 詞彙寶庫 | 素養挑戰
@@ -601,75 +610,70 @@ purity_protocol:
 
 ### [P3] (結構視圖)
 【鏡頭視角】: 資訊圖表 (Infographic)
-【視覺提示詞】: Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, branching out to Clear Text Bubbles containing the specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_code}} + Infographic Style. Safety: No blurry text.
+【視覺提示詞】: Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, branching out to Clear Text Bubbles containing the specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_prompt}} + Infographic Style. Safety: No blurry text.
 【顯示文字】: 
 ---
 標題 | 寫作手法
-結構流: [段落1: 關鍵詞A/關鍵詞B] -> [段落2: 關鍵詞C/關鍵詞D]... (Must display specific keywords for every node. NO English.)
+結構流: [段落1: 關鍵詞1/關鍵詞2/關鍵詞3...] -> [段落2: 關鍵詞1/關鍵詞2/關鍵詞3...] 
+(⚠️ CRITICAL LOGIC: You MUST list ALL keywords generated for each segment from Step 2.75. Do NOT truncate to just 2 items. NO English.)
 引導語: [Explanation of the structure metaphor]
 ---
 【引導語/腳本】: "[Explanation of the structure metaphor and how keywords connect]"
 
 == PART B: 詳盡課文迴圈 (Detailed Text Loop) ==
-⚠️ LOGIC: Iterate through ALL defined Meaning Segments from Step 2.5.
-⚠️ PATTERN: [Segment Story] -> [Segment Deep Dive] -> Next Segment...
+⚠️ [COMPILER DIRECTIVE: FULL UNROLLING REQUIRED] 
+You MUST iterate through ALL Meaning Segments generated from Step 2.75. 
+DO NOT SKIP ANY SEGMENT. DO NOT USE ELLIPSES ("..."). You must generate the [P_N] and [P_N+1] blocks for EVERY single segment.
 
-### [P_{N}] (意義段故事)
+### [P_{N}] (意義段: {Insert Segment Title} - 內容對焦)
 【鏡頭視角】: 廣角 (Exhale)
-【視覺提示詞】: (Logic: IF Mode A Subject={{story_protagonist}}; IF Mode B Subject={{guide_avatar}}) Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: [Segment Plot]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
+【視覺提示詞】: (Logic: IF Mode A Subject={{story_protagonist}}; IF Mode B Subject={{guide_avatar}}) Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: [Segment Plot]. Composition: [Creative Angle]. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
-段落大意 | 難詞 (No English)
-隨文修辭 | 關鍵句型
-引導語: [Storytelling or Analysis based on Mode]
+[右上角導航]: 第 {N} 站：{Insert Segment Title}
+段落大意：[⚠️ SYSTEM: 填入 Step 2.75 該段落的 summary]
+難詞顯影：
+[⚠️ SYSTEM: 填入該段落的 difficultWords，並強制附上「簡短的詞語解釋」(例如：欣賞：以喜愛的心情觀賞。)] (NO English)
 ---
-【引導語/腳本】: "[Storytelling or Analysis based on Mode]"
+【引導語/腳本】: "(搭配[填入適合的表情或動作，例如：專注的表情]) [Storytelling or Content summary based on Mode]"
 
-### [P_{N+1}] (文意深究)
+### [P_{N+1}] (意義段: {Insert Segment Title} - 寫作深究)
 【鏡頭視角】: 特寫 (Inhale)
-【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}). Context: Analyzing details. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}). Context: Analyzing details or visual metaphor of the rhetoric. Composition: Close-up. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
-深究解析 + 提問 (Functional Guide Talk: Digging for details)
+[右上角導航]: 第 {N} 站：深究特寫
+文意深究 (修辭與句型)：
+[⚠️ SYSTEM: 列出該段落的 rhetorics 與 sentencePatterns 的「課文原句」]
+[⚠️ SYSTEM: 針對上述原句，強制加上「解析：...」，說明作者為何這樣寫、產生了什麼效果(例如：將雨傘比喻成花朵，讓灰暗的雨天變生動)]
 ---
-【引導語/腳本】: "[Probing question for students]"
+【引導語/腳本】: "(搭配[填入適合的表情或動作，例如：讚賞的表情]) [Probing question for students or explanation of the writing technique]"
 
-... (Repeat above pattern for Segment 1 to Segment N) ...
-
-### [P_Mid] (中段評量)
-【鏡頭視角】: 平面俯視 (Flat Lay)
-【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}) as Game Show Host waiting. Context: Game show studio or Blackboard. Composition: Flat Lay. Artistic VIS: {{style_code}}. Safety: No text.
-【顯示文字】: 
----
-隨堂大挑戰
-Q1 (推論): [Question based on Text]
-Q2 (提取): [Question based on Text]
----
-【引導語/腳本】: "⚠️ [Teacher_Answer_Key]: 1. [Answer] 2. [Answer]. (Answers are HIDDEN from slide)"
-
+⚠️ [SYSTEM CHECK]: Have you generated the above two blocks for EVERY segment? If there are 4 segments, you must generate 8 slides here. DO NOT STOP EARLY.
 == PART C: 原子語文迴圈 (Atomic Language Loop) ==
-⚠️ LOGIC: Strict Sequential Loops. Do NOT interleave types.
+⚠️ [COMPILER DIRECTIVE: FULL EXHAUSTION REQUIRED]
+You MUST generate a slide for EVERY SINGLE item in the Shape-Similar, Polyphonic, and Idiom lists. DO NOT group multiple distinct sets into one slide unless explicitly instructed. DO NOT USE "...".
 
 -- Sub-Loop C1: 形近字 (Shape-Similar) --
 ⚠️ GROUPING LOGIC: All characters in a shape-similar set (2, 3, or 4 chars) MUST appear on the SAME slide.
 ### [P_{N}] (形近字: [Target Char])
 【鏡頭視角】: 分割畫面/網格 (Split Screen/Grid)
-【視覺提示詞】: Subject: {{guide_avatar}} presenting comparison. Context: [Char A Object] vs [Char B Object] (vs [Char C]...). Composition: Split Screen (for 2) or Grid (for 3-4). Artistic VIS: {{style_code}}. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} presenting comparison. Context: [Char A Object] vs [Char B Object] (vs [Char C]...). Composition: Split Screen (for 2) or Grid (for 3-4). Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 [Char A] ([Radical]) - [Word]
 [Char B] ([Radical]) - [Word]
-... (Include all chars in the set. NO English translations.)
+(⚠️ Logic: Ensure all characters in this specific set are listed here. NO English.)
 Guide_Talk: "[Mnemonic linking all characters]"
 解析: [Detailed explanation of radical differences]
 ---
 【引導語/腳本】: "[Detailed explanation of radical differences]"
-... (Repeat for next Shape-Similar Set) ...
+(⚠️ SYSTEM: GENERATE THE ABOVE BLOCK FOR EVERY SHAPE-SIMILAR SET.)
 
 -- Sub-Loop C2: 多音字 (Polyphonic) --
-### [P_{N}] (多音字)
+### [P_{N}] (多音字: [Target Char])
 【鏡頭視角】: 對比/天平
-【視覺提示詞】: Subject: {{guide_avatar}} weighing options or showing two paths. Context: [Sound A] vs [Sound B]. Composition: Symmetrical. Artistic VIS: {{style_code}}. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} weighing options or showing two paths. Context: [Sound A] vs [Sound B]. Composition: Symmetrical. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 [生字]
@@ -677,12 +681,12 @@ Guide_Talk: "[Mnemonic linking all characters]"
 引導語: [Functional Explanation]
 ---
 【引導語/腳本】: "[Functional Explanation of Context/Pronunciation]"
-... (Repeat for ALL Polyphonic items) ...
+(⚠️ SYSTEM: GENERATE THE ABOVE BLOCK FOR EVERY POLYPHONIC CHARACTER.)
 
 -- Sub-Loop C3: 成語 (Idioms) --
-### [P_{N}] (成語)
+### [P_{N}] (成語: [Target Idiom])
 【鏡頭視角】: 情境演繹
-【視覺提示詞】: Subject: {{guide_avatar}} acting out [Idiom] in a real-life scenario. Context: [Scenario Description]. Composition: [Creative Angle]. Artistic VIS: {{style_code}}. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} acting out [Idiom] in a real-life scenario. Context: [Scenario Description]. Composition: [Creative Angle]. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 [成語]
@@ -690,7 +694,7 @@ Guide_Talk: "[Mnemonic linking all characters]"
 引導語: [Functional Explanation]
 ---
 【引導語/腳本】: "[Functional Explanation of Real-life Usage]"
-... (Repeat for ALL Idiom items) ...
+(⚠️ SYSTEM: GENERATE THE ABOVE BLOCK FOR EVERY IDIOM. DO NOT SKIP.)
 
 ### [P_Close] (綜合評量)
 【鏡頭視角】: 分割畫面/票券設計
@@ -703,9 +707,10 @@ IF Exit_Ticket: 本堂課的登機證 | 1. 我學會的一個新觀點... | 2. �
 【引導語/腳本】: "If Error_Hunt: ⚠️ [Teacher_Answer_Key]: The false statement is... (Hidden). If Exit_Ticket: Guide students to write down reflections."
 
 == PART D: 百寶箱迴圈 (Strategy Loop) ==
-### [P_{Strategy_N}] (策略頁)
+⚠️ [COMPILER DIRECTIVE: GENERATE ALL 3 STRATEGIES]
+### [P_{Strategy_N}] (策略頁: [Strategy Title])
 【鏡頭視角】: 資訊圖表
-【視覺提示詞】: Subject: {{guide_avatar}} presenting tool [Name]. Context: [Tool Visual]. Composition: Info-graphic Layout. Artistic VIS: {{style_code}}. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} presenting tool [Name]. Context: [Tool Visual]. Composition: Info-graphic Layout. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 [策略名稱]
@@ -714,12 +719,12 @@ IF Exit_Ticket: 本堂課的登機證 | 1. 我學會的一個新觀點... | 2. �
 引導語: [Explanation of the Strategy Tool]
 ---
 【引導語/腳本】: "[Explanation of the Strategy Tool + How to use it]"
-... (Iterate for all strategies) ...
+(⚠️ SYSTEM: GENERATE THE ABOVE BLOCK FOR EVERY STRATEGY OBTAINED IN STEP 2.75)
 
 == PART E: 結尾 ==
 ### [P_{End}] (結尾)
 【鏡頭視角】: 廣角
-【視覺提示詞】: Subject: {{guide_avatar}} waving goodbye to the audience. Context: Closing scene. Composition: Wide. Artistic VIS: {{style_code}}. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} waving goodbye to the audience. Context: Closing scene. Composition: Wide. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 總結 + 下課
@@ -783,32 +788,36 @@ Target: Provide a bullet-proof command pack for the user.
 
 ⚠️ DYNAMIC DATA: {Guide Name: "{Guide_Name}", Tone: "{Tone_Description}", Grade: "{Grade}", Topic: "{Topic}"}
 
-# NotebookLM 萬能指令包 (V-MAX v59.3 強化版)
+# NotebookLM 萬能操作指南 (V-MAX 現代化 UI 工作流)
 
-## 1. 投影片生成指令 (Slide Generation) - 深度執行模式
-請複製以下指令貼入 NotebookLM（此指令包含防覆寫協定，可避免 AI 自作聰明）：
+## 1. 全局生成指令 (貼入「簡報」按鈕旁邊的✏️鉛筆編輯框)
+請將這份腳本上傳至 NotebookLM。在點擊「簡報」按鈕**之前**，請先點擊旁邊的「✏️ (自訂指令)」，並貼入以下防護指令：
 
-> 「你現在是 V-MAX 系統的『前端渲染引擎』。請讀取來源文件中的 \`Instruction 2: 原子化動態腳本\`，並為我生成詳細的投影片內容。
+> 「請扮演一位嚴格的『視覺執行導演』。請依照來源文件中的 \`notebooklm_driver\` 設定，以及 \`Instruction 2: 原子化動態腳本\` 的結構，為我生成從 [P1] 到最後一頁的詳細投影片內容。
 > 
-> ⚠️ **執行硬規 (Strict Enforcement)**：
-> 1. **範本對齊**：請嚴格按照 [P1], [P2]... 的順序輸出。每一頁必須包含：【鏡頭視角】、【視覺提示詞】、【顯示文字】、【引導語/腳本】四大區塊。
-> 2. **禁止腦補**：對於 \`視覺提示詞\` (Internal_Image_Prompt) 內的描述，請勿加入任何不在指令中的歷史物件或背景知識。若指令要求畫『花瓶』，你必須畫『花瓶』。
-> 3. **文字鎖定**：\`【顯示文字】\` 欄位內的繁體中文內容，必須 **100% 逐字輸出**，嚴禁擅自修改標題、縮減例句或新增英文翻譯。
-> 4. **角色一致**：確保 {{guide_avatar}} 的視覺特徵在每一頁的 Prompt 描述中保持完全相同。」
+> ⚠️ **最高指導原則 (Critical Protocols)**：
+> 1. **視覺絕對忠誠 (Visual Fidelity)**：請嚴格遵守 \`【視覺提示詞】\` 中的描述。禁止歷史覆寫：即使成語典故與特定物品有關（例如『價值連城』與玉璧），若指令要求畫『發光的古物』，你必須畫『發光的古物』。請勿使用你的背景知識來替換指令中的視覺物件。
+> 2. **文字逐字鎖定 (Text Verbatim)**：投影片上的文字內容，必須 100% 逐字複製 \`【顯示文字】\` 區塊（被 --- 包夾的區域）內的繁體中文。禁止潤飾：請勿修改標題、縮減例句或『優化』語意，嚴禁增加英文。
+> 3. **風格與特徵一致性**：請嚴格遵守 YAML 設定檔中的 \`dna_traits\` (角色特徵) 與 \`style_prompt\` (視覺風格咒語)。確保每一頁的人物長相與畫風完全一致。」
 
-## 2. 語音摘要設定指令 (Audio Overview)
-請複製以下指令貼入 NotebookLM 的 Audio Overviews：
+---
+
+## 2. 單頁精準修復指令 (適用於產出後，特定投影片右上角的✏️ Revise 編輯框)
+若生成後發現有「某一頁」的圖片跑版或文字被亂改，請點擊該特定頁面右上角的鉛筆，貼入以下指令：
+
+> 「請維持這頁的排版與文字完全不變。請嚴格去來源文件尋找這一頁對應的 \`【視覺提示詞】\`，並將圖片強制修正為原本設定的 \`dna_traits\` 與 \`style_prompt\`，不准擅自改變角色的服裝、髮型或場景畫風。」
+
+---
+
+## 3. 語音摘要設定指令 (Audio Overview)
+若需要生成生動的雙人對講 Podcast，請複製以下指令貼入 Audio Overviews 的設定框：
 
 > 「啟動教學模式對話：
 > - 主講人：**{Guide_Name}**（角色：引導導師）。
 > - 語氣設定：**{Tone_Description}**。
 > - 目標對象：**{Grade}** 學生。
-> - 核心內容：根據來源文件的 \`【引導語/腳本】\`，針對『**{Topic}**』進行深度拆解。
+> - 核心內容：根據來源文件的 \`【引導語/腳本】\`，針對『**{Topic}**』進行深度對話與拆解。
 > - 互動要求：對話中必須包含對修辭技巧、生字部首的具體解釋，並使用『孩子們』、『準備好了嗎』作為課堂互動用語。」
-
-## 3. 進階技巧：強制結構修正
-若 AI 仍然沒有按照上述的四個【】區塊顯示，請直接對它說：
-> 「你的格式跑掉了。請嚴格遵守 Instruction 2 的 Markdown 結構重新輸出，文字區塊必須用 '---' 分隔，不要對內容進行任何總結或優化。」
 `;
 
 export const PROMPT_GENERATE_GAMIFIED_QUIZ = `

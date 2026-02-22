@@ -1,72 +1,145 @@
 import React from 'react';
 import { AppStep } from '../types';
 import { VMAX_KERNEL_VERSION } from '../constants';
-import { Activity, Cpu } from 'lucide-react';
+import { Activity, CheckCircle2, Disc, Layers, Layout, Mic2, Palette, RefreshCw, Wand2, Zap } from 'lucide-react';
 
 interface StatusControlProps {
   step: AppStep;
   statusText?: string;
   isProcessing: boolean;
+  onReset: () => void;
 }
 
-const StatusControl: React.FC<StatusControlProps> = ({ step, statusText, isProcessing }) => {
-  const getStepLabel = () => {
-    switch (step) {
-        case AppStep.STEP_1_INPUT: return "1.0 INPUT_LOCK";
-        case AppStep.STEP_2_BASIC: return "2.0 BASIC_ANALYSIS";
-        case AppStep.STEP_3_DEEP_VOCAB: return "2.5 DEEP_RADIATION";
-        case AppStep.STEP_3_DEEP_SEGMENTS: return "2.75 LOGIC_DECONSTRUCTION";
-        case AppStep.STEP_4_VISUALS: return "3.0 VISUAL_SKIN";
-        case AppStep.STEP_5_CASTING: return "4.0 SOUL_CASTING";
-        case AppStep.STEP_6_OUTPUT: return "5.0 CORE_GENERATION";
-        default: return "SYSTEM_IDLE";
-    }
-  };
+const steps = [
+    { id: AppStep.STEP_1_INPUT, label: 'Input Lock', icon: Disc },
+    { id: AppStep.STEP_2_BASIC, label: 'Basic Analysis', icon: Activity },
+    { id: AppStep.STEP_3_DEEP_VOCAB, label: 'Deep Radiation', icon: Layers },
+    { id: AppStep.STEP_3_DEEP_SEGMENTS, label: 'Logic Deconstruct', icon: Layout },
+    { id: AppStep.STEP_4_VISUALS, label: 'Visual Skin', icon: Palette },
+    { id: AppStep.STEP_5_CASTING, label: 'Soul Casting', icon: Mic2 },
+    { id: AppStep.STEP_6_OUTPUT, label: 'Core Generation', icon: Wand2 },
+];
 
+const StatusControl: React.FC<StatusControlProps> = ({ step, statusText, isProcessing, onReset }) => {
+  
   return (
-    <div className="w-full bg-slate-950/70 backdrop-blur-md border-b border-white/10 p-2 font-mono text-xs md:text-sm shadow-lg sticky top-0 z-50 overflow-x-hidden">
-      <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            {/* System Status Indicator */}
-            <div className="flex items-center space-x-2 bg-slate-900/50 px-2 py-1 rounded border border-white/5">
-                <div className={`w-2 h-2 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)] ${isProcessing ? 'bg-amber-400 animate-pulse shadow-amber-500/50' : 'bg-emerald-500'}`} />
-                <span className={`text-[10px] font-bold tracking-wider ${isProcessing ? 'text-amber-400' : 'text-emerald-400'}`}>
-                    {isProcessing ? "PROCESSING" : "ONLINE"}
+    <>
+        {/* Mobile Header */}
+        <div className="md:hidden w-full bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-50">
+            <div className="flex items-center gap-2 font-bold text-slate-800">
+                <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                    <Zap size={16} fill="currentColor" />
+                </div>
+                <span className="tracking-tight">V-MAX</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+                <button 
+                    onClick={onReset}
+                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Reset Project"
+                >
+                    <RefreshCw size={16} />
+                </button>
+                <span className="text-slate-500 font-medium">
+                    {steps.find(s => s.id === step)?.label || "SYSTEM"}
+                </span>
+                {isProcessing && <div className="w-2 h-2 rounded-full bg-teal-500 animate-pulse" />}
+            </div>
+        </div>
+
+        {/* Desktop Sidebar */}
+        <aside className="hidden md:flex flex-col w-64 flex-shrink-0 bg-white border-r border-slate-100 h-screen sticky top-0 z-40">
+          {/* Header */}
+          <div className="p-6 pb-8 flex justify-between items-start">
+            <div className="flex items-center gap-3 text-slate-800 font-bold tracking-tight">
+                <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-emerald-600 rounded-xl flex items-center justify-center text-white shadow-md shadow-teal-200">
+                    <Zap size={20} fill="currentColor" />
+                </div>
+                <div className="flex flex-col">
+                    <span className="text-lg leading-none">V-MAX</span>
+                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mt-1">Omni-Architect</span>
+                </div>
+            </div>
+          </div>
+
+          {/* Steps Navigation */}
+          <div className="flex-1 overflow-y-auto px-4 space-y-1">
+            <div className="flex items-center justify-between mb-4 px-2">
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Workflow</div>
+                <button 
+                    onClick={onReset}
+                    className="text-[10px] font-bold text-slate-400 hover:text-red-500 uppercase tracking-widest flex items-center gap-1 transition-colors"
+                    title="Reset Project"
+                >
+                    <RefreshCw size={10} />
+                    RESET
+                </button>
+            </div>
+            {steps.map((s, index) => {
+                const isActive = step === s.id;
+                const isCompleted = step > s.id;
+                
+                return (
+                    <div 
+                        key={s.id}
+                        className={`
+                            group flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 relative
+                            ${isActive 
+                                ? 'bg-teal-50 text-teal-800' 
+                                : isCompleted 
+                                    ? 'text-slate-600 hover:bg-slate-50' 
+                                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                            }
+                        `}
+                    >
+                        {/* Active Indicator Bar */}
+                        {isActive && (
+                            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-teal-500 rounded-r-full" />
+                        )}
+
+                        <div className={`
+                            relative flex items-center justify-center w-6 h-6 rounded-full transition-colors
+                            ${isActive ? 'text-teal-600' : isCompleted ? 'text-teal-500' : 'text-slate-300 group-hover:text-slate-400'}
+                        `}>
+                            {isCompleted ? (
+                                <CheckCircle2 size={18} />
+                            ) : (
+                                <s.icon size={18} />
+                            )}
+                        </div>
+                        
+                        <span className={isActive ? 'font-semibold' : ''}>{s.label}</span>
+                        
+                        {isActive && isProcessing && (
+                            <div className="ml-auto flex space-x-1">
+                                <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                <div className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce"></div>
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
+          </div>
+
+          {/* Status Footer */}
+          <div className="p-4 m-4 bg-slate-50 rounded-xl border border-slate-100">
+            <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System Status</span>
+                <span className="text-[10px] font-mono text-slate-300">v{VMAX_KERNEL_VERSION}</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+                <div className="relative flex h-2.5 w-2.5">
+                  {isProcessing && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>}
+                  <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${isProcessing ? 'bg-teal-500' : 'bg-emerald-500'}`}></span>
+                </div>
+                <span className={`text-xs font-medium truncate ${isProcessing ? 'text-teal-700' : 'text-slate-600'}`}>
+                    {isProcessing ? (statusText || "Processing...") : "System Ready"}
                 </span>
             </div>
-
-            {/* Step Info */}
-            <div className="hidden md:flex items-center space-x-2 text-slate-400">
-                <span className="opacity-50">||</span>
-                <span className="text-blue-400 font-bold">{getStepLabel()}</span>
-                <span className="opacity-50">||</span>
-                <span>KERNEL: {VMAX_KERNEL_VERSION}</span>
-            </div>
           </div>
-
-          {/* Scrolling Log (Simplified) */}
-          <div className="flex-1 text-right truncate pl-4 text-slate-500 text-[10px]">
-             {statusText ? (
-                 <span className="text-emerald-500/80 animate-pulse">{statusText}</span>
-             ) : (
-                 <span className="opacity-30">AWAITING INPUT STREAM...</span>
-             )}
-          </div>
-      </div>
-      
-      {/* Loading Progress Bar Line */}
-      {isProcessing && (
-          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-slate-800">
-              <div className="h-full bg-gradient-to-r from-transparent via-blue-500 to-transparent w-1/3 animate-[shimmer_1.5s_infinite_linear]"></div>
-          </div>
-      )}
-      <style>{`
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(300%); }
-        }
-      `}</style>
-    </div>
+        </aside>
+    </>
   );
 };
 

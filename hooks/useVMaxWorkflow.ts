@@ -13,7 +13,8 @@ import {
   GENERATE_MNEMONIC_PROMPT, GENERATE_POLYPHONIC_PROMPT, GENERATE_SHAPE_SIMILAR_PROMPT, 
   GENERATE_RHETORIC_GUIDANCE_PROMPT, STEP_2_VISUALS_PROMPT, STEP_3_CASTING_PROMPT_PREFIX, 
   STEP_3_CASTING_PROMPT_SUFFIX, STEP_4_GENERATION_PROMPT_PREFIX, STEP_4_GENERATION_PROMPT_SUFFIX, 
-  PROMPT_GENERATE_WORKSHEET, PROMPT_GENERATE_ASSESSMENT, PROMPT_GENERATE_KB, PROMPT_GENERATE_NOTEBOOKLM_GUIDE
+  PROMPT_GENERATE_WORKSHEET, PROMPT_GENERATE_ASSESSMENT, PROMPT_GENERATE_KB, PROMPT_GENERATE_NOTEBOOKLM_GUIDE,
+  PROMPT_GENERATE_GAMIFIED_QUIZ
 } from '../constants';
 import { saveToDB, loadFromDB } from '../utils';
 
@@ -287,6 +288,17 @@ The user's session was interrupted. Here is the FULL CONTEXT of the project so f
     });
   };
 
+  const handleReset = async () => {
+    if (window.confirm("確定要重置所有進度嗎？這將會清除目前的專案資料。")) {
+      setState(initialState);
+      try {
+        await saveToDB(LOCAL_STORAGE_STATE_KEY, initialState);
+      } catch (e) {
+        console.error("Failed to reset state in IndexedDB", e);
+      }
+    }
+  };
+
   return {
     state,
     setState, // Expose setState if needed for simple updates like error clearing
@@ -305,6 +317,7 @@ The user's session was interrupted. Here is the FULL CONTEXT of the project so f
     handleStep3Confirm,
     handleStep4Confirm,
     handleGenerateModule,
-    handleBack
+    handleBack,
+    handleReset
   };
 }

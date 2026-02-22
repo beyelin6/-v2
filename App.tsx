@@ -34,13 +34,13 @@ function App() {
     handleStep3Confirm,
     handleStep4Confirm,
     handleGenerateModule,
-    handleBack
+    handleBack,
+    handleReset
   } = useVMaxWorkflow();
 
   const handleApiKeyConfirm = (key: string) => {
     setApiKey(key);
     setShowApiKeyModal(false);
-    // Clear previous error when new key is set
     if (state.error) {
         setState(prev => ({ ...prev, error: null }));
     }
@@ -56,26 +56,22 @@ function App() {
     extractStatus(state.finalOutput);
 
   return (
-    <div className="min-h-screen flex flex-col relative text-slate-700 selection:bg-emerald-200 selection:text-emerald-900">
+    <div className="flex h-screen w-full bg-slate-50 text-slate-800 selection:bg-teal-50 selection:text-teal-900 font-sans overflow-hidden">
       
-      {/* Ambient Background Effects - Light Mode */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-400/20 rounded-full blur-3xl opacity-40 animate-pulse"></div>
-        <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] bg-purple-400/20 rounded-full blur-3xl opacity-40 animate-pulse delay-1000"></div>
-        <div className="absolute bottom-[10%] left-[20%] w-[35%] h-[35%] bg-emerald-400/20 rounded-full blur-3xl opacity-30 animate-pulse delay-2000"></div>
-      </div>
-
       <StatusControl 
         step={state.currentStep} 
         statusText={currentStatusText}
         isProcessing={state.isLoading}
+        onReset={handleReset}
       />
 
-      <main className="flex-1 p-4 md:p-6 max-w-[1400px] mx-auto w-full relative z-10 flex flex-col justify-center">
-        <div className="absolute top-0 right-4 md:right-6 z-20">
+      <div className="flex-1 flex flex-col min-w-0 h-full relative">
+      <main className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+        <div className="max-w-5xl mx-auto w-full relative pb-10">
+        <div className="absolute top-0 right-0 z-20">
             <button 
                 onClick={() => setShowApiKeyModal(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/60 hover:bg-white/90 text-slate-600 hover:text-slate-900 rounded-lg text-xs font-mono transition-all border border-slate-200 hover:border-slate-300 backdrop-blur-md shadow-sm"
+                className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 rounded-lg text-xs font-mono transition-all border border-slate-200 hover:border-slate-300 shadow-sm"
             >
                 <Key size={14} />
                 <span>API KEY</span>
@@ -91,7 +87,7 @@ function App() {
         )}
         
         {state.error && (
-           <div className="mb-6 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center animate-in fade-in zoom-in-95 mt-10 md:mt-0 shadow-lg backdrop-blur-md">
+           <div className="mb-6 bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-center animate-in fade-in zoom-in-95 mt-10 md:mt-0 shadow-sm">
              <svg className="w-6 h-6 mr-3 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
              <div className="flex-1">
                <p className="font-bold text-lg mb-1 text-red-800">發生錯誤</p>
@@ -106,10 +102,7 @@ function App() {
            </div>
         )}
 
-        {/* Main Application Frame */}
-        <div className="glass-panel rounded-2xl p-1.5 md:p-2 h-[82vh] flex flex-col shadow-xl mt-8 md:mt-4 relative overflow-hidden bg-white/80 border-white/50">
-          {/* Subtle Inner Glow */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
+        <div className="glass-panel bg-white border border-slate-200 rounded-2xl p-1.5 md:p-2 min-h-[calc(100vh-10rem)] flex flex-col shadow-lg mt-12 md:mt-4 relative overflow-hidden">
           
           <div className="flex-1 p-2 md:p-4 overflow-hidden relative z-10">
              {state.currentStep === AppStep.STEP_1_INPUT && (
@@ -178,11 +171,13 @@ function App() {
              )}
           </div>
         </div>
+        </div>
       </main>
 
-      <footer className="p-4 text-center text-slate-500 text-[10px] font-mono tracking-widest uppercase opacity-60">
-        V-MAX System Kernel v59.0 &middot; Omni-Architect &middot; Gemini 3.0 Flash
+      <footer className="p-4 text-center text-slate-500 text-[10px] font-mono tracking-widest uppercase opacity-60 bg-slate-50 border-t border-slate-200">
+        V-MAX System Kernel v59.3 &middot; Omni-Architect &middot; Focus Reading Mode
       </footer>
+      </div>
     </div>
   );
 }

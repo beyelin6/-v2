@@ -35,7 +35,9 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onConfirm, onClose, hasExisti
           </h3>
           <div className="flex gap-2 text-slate-400">
             {!onClose && <Key size={20} />}
-            <HelpCircle size={20} className="cursor-help" title="請輸入 Google AI Studio 提供的 API Key" />
+            <div title="請輸入 Google AI Studio 提供的 API Key">
+                <HelpCircle size={20} className="cursor-help" />
+            </div>
           </div>
         </div>
         
