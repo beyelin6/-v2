@@ -69,11 +69,11 @@ const Step1Input: React.FC<Step1InputProps> = ({ onAnalyze, isLoading }) => {
       {/* Title Section */}
       <div className="flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center text-glow-blue">
-              <span className="bg-blue-600/80 backdrop-blur text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm shadow-[0_0_15px_rgba(37,99,235,0.5)]">1</span>
+            <h2 className="text-2xl font-bold text-slate-800 mb-2 flex items-center">
+              <span className="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm shadow-md shadow-blue-200">1</span>
               內容定錨 (Ingredients)
             </h2>
-            <p className="text-slate-400 text-sm ml-11 max-w-2xl">
+            <p className="text-slate-500 text-sm ml-11 max-w-2xl">
               請輸入教學文本。Omni-Architect 將執行「多模態認知解構」，自動識別文體、提取核心生字，並轉化為視覺隱喻結構。
             </p>
           </div>
@@ -83,21 +83,21 @@ const Step1Input: React.FC<Step1InputProps> = ({ onAnalyze, isLoading }) => {
       <div className="flex-1 flex flex-col relative group">
           <div className="absolute inset-0 bg-blue-500/5 rounded-xl blur-xl group-hover:bg-blue-500/10 transition-all duration-700"></div>
           
-          <div className="relative flex-1 flex flex-col bg-slate-950/50 border border-slate-800 rounded-xl overflow-hidden backdrop-blur-sm shadow-inner transition-colors hover:border-slate-700">
+          <div className="relative flex-1 flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm transition-colors hover:border-blue-300 hover:shadow-md">
             {/* Toolbar */}
-            <div className="bg-slate-900/80 border-b border-slate-800 p-2 flex items-center gap-2">
+            <div className="bg-slate-50 border-b border-slate-200 p-2 flex items-center gap-2">
                 <div className="flex gap-1.5 ml-2 mr-4">
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/50"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/50"></div>
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/50"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400"></div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
                 </div>
-                <span className="text-[10px] text-slate-500 font-mono flex items-center gap-1">
+                <span className="text-[10px] text-slate-500 font-mono flex items-center gap-1 bg-slate-200/50 px-2 py-0.5 rounded">
                     <Terminal size={10} /> source_text.md
                 </span>
             </div>
 
             <textarea
-                className="w-full flex-1 bg-transparent p-6 text-slate-300 focus:outline-none focus:bg-slate-900/30 transition-all resize-none font-mono text-sm leading-relaxed custom-scrollbar placeholder-slate-600"
+                className="w-full flex-1 bg-transparent p-6 text-slate-700 focus:outline-none focus:bg-slate-50 transition-all resize-none font-mono text-sm leading-relaxed custom-scrollbar placeholder-slate-400"
                 placeholder="在此貼上課文內容，或點擊下方按鈕上傳 (支援多檔案)..."
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -109,21 +109,21 @@ const Step1Input: React.FC<Step1InputProps> = ({ onAnalyze, isLoading }) => {
             {selectedFiles.length > 0 && (
                 <div className="absolute bottom-4 left-4 right-4 z-10 animate-in fade-in slide-in-from-bottom-2 flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
                     {selectedFiles.map((file, index) => (
-                        <div key={index} className="flex items-center bg-slate-800/90 border border-slate-600/50 rounded-lg p-2 backdrop-blur-md shadow-lg min-w-[200px] max-w-[250px]">
-                            <div className="bg-blue-500/20 p-2 rounded-md mr-3">
+                        <div key={index} className="flex items-center bg-white border border-slate-200 rounded-lg p-2 shadow-md min-w-[200px] max-w-[250px]">
+                            <div className="bg-blue-50 p-2 rounded-md mr-3 border border-blue-100">
                                 {file.mimeType === 'application/pdf' ? (
-                                <FileType className="text-red-400" size={16} />
+                                <FileType className="text-red-500" size={16} />
                                 ) : (
-                                <ImageIcon className="text-emerald-400" size={16} />
+                                <ImageIcon className="text-emerald-500" size={16} />
                                 )}
                             </div>
                             <div className="flex-1 overflow-hidden">
-                                <p className="text-xs text-slate-200 font-bold truncate" title={file.name}>{file.name}</p>
+                                <p className="text-xs text-slate-700 font-bold truncate" title={file.name}>{file.name}</p>
                                 <p className="text-[9px] text-slate-400 font-mono uppercase tracking-wider">{file.mimeType.split('/')[1] || 'FILE'}</p>
                             </div>
                             <button 
                                 onClick={() => removeFile(index)}
-                                className="p-1 hover:bg-red-500/20 rounded-md text-slate-400 hover:text-red-400 transition-colors ml-1"
+                                className="p-1 hover:bg-red-50 rounded-md text-slate-400 hover:text-red-500 transition-colors ml-1"
                             >
                                 <X size={14} />
                             </button>
@@ -138,7 +138,7 @@ const Step1Input: React.FC<Step1InputProps> = ({ onAnalyze, isLoading }) => {
             <button 
                 onClick={triggerFileUpload}
                 disabled={isLoading}
-                className="flex items-center px-5 py-2.5 bg-slate-800/50 hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl text-sm font-medium transition-all border border-slate-700 hover:border-slate-500 hover:shadow-lg hover:shadow-slate-900/50"
+                className="flex items-center px-5 py-2.5 bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 rounded-xl text-sm font-medium transition-all border border-slate-200 hover:border-slate-300 shadow-sm hover:shadow-md"
             >
                 <Upload size={16} className="mr-2" />
                 上傳檔案 (PDF/IMG/TXT)
@@ -149,8 +149,8 @@ const Step1Input: React.FC<Step1InputProps> = ({ onAnalyze, isLoading }) => {
                 disabled={!isReady}
                 className={`flex items-center px-8 py-3 rounded-xl font-bold transition-all transform tracking-wide ${
                 !isReady
-                    ? 'bg-slate-800 text-slate-600 border border-slate-800 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white hover:scale-105 shadow-[0_0_20px_rgba(37,99,235,0.4)] border border-blue-500/50'
+                    ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-500 text-white hover:scale-105 shadow-lg shadow-blue-200 border border-blue-500'
                 }`}
             >
                 {isLoading ? (

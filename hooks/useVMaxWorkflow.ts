@@ -14,7 +14,7 @@ import {
   GENERATE_RHETORIC_GUIDANCE_PROMPT, STEP_2_VISUALS_PROMPT, STEP_3_CASTING_PROMPT_PREFIX, 
   STEP_3_CASTING_PROMPT_SUFFIX, STEP_4_GENERATION_PROMPT_PREFIX, STEP_4_GENERATION_PROMPT_SUFFIX, 
   PROMPT_GENERATE_WORKSHEET, PROMPT_GENERATE_ASSESSMENT, PROMPT_GENERATE_KB, PROMPT_GENERATE_NOTEBOOKLM_GUIDE,
-  PROMPT_GENERATE_GAMIFIED_QUIZ
+  PROMPT_GENERATE_GAMIFIED_QUIZ, GENERATE_SHAPE_SIMILAR_DETAILS_PROMPT
 } from '../constants';
 import { saveToDB, loadFromDB } from '../utils';
 
@@ -216,6 +216,14 @@ The user's session was interrupted. Here is the FULL CONTEXT of the project so f
     } catch (e) { console.error("Shape Similar Gen Error:", e); throw e; }
   };
 
+  const handleGenerateShapeSimilarDetails = async (char: string): Promise<ShapeSimilarItem | null> => {
+    try {
+      const response = await sendMessageToGemini(`${getRecoveryContext()}\n${GENERATE_SHAPE_SIMILAR_DETAILS_PROMPT.replace('{CHAR}', char)}`);
+      const result = JSON.parse(response.replace(/```json/g, '').replace(/```/g, ''));
+      return result && result.char ? result : null;
+    } catch (e) { console.error("Shape Similar Details Gen Error:", e); throw e; }
+  };
+
   const handleGenerateRhetoricGuidance = async (segmentTitle: string, rhetoricName: string, rhetoricExample: string) => {
     try {
       const prompt = `${getRecoveryContext()}\n${GENERATE_RHETORIC_GUIDANCE_PROMPT.replace('{SEGMENT_TITLE}', segmentTitle).replace('{RHETORIC_NAME}', rhetoricName).replace('{RHETORIC_EXAMPLE}', rhetoricExample)}`;
@@ -313,6 +321,7 @@ The user's session was interrupted. Here is the FULL CONTEXT of the project so f
     handleGenerateMnemonic,
     handleGeneratePolyphonic,
     handleGenerateShapeSimilar,
+    handleGenerateShapeSimilarDetails,
     handleGenerateRhetoricGuidance,
     handleStep3Confirm,
     handleStep4Confirm,

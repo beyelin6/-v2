@@ -67,20 +67,20 @@ function SortableItem({ id, active }: { id: ModuleType; active: boolean }) {
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center p-4 rounded-xl border mb-3 select-none ${
+      className={`flex items-center p-4 rounded-xl border mb-3 select-none shadow-sm transition-all ${
         active 
-          ? 'bg-emerald-900/20 border-emerald-500/50' 
-          : 'bg-slate-800 border-slate-700 hover:border-slate-600'
+          ? 'bg-emerald-50 border-emerald-200 shadow-md' 
+          : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-md'
       }`}
     >
-      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-2 mr-2 text-slate-500 hover:text-slate-300">
+      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-2 mr-2 text-slate-400 hover:text-slate-600">
         <GripVertical size={20} />
       </div>
-      <div className={`p-2 rounded-lg mr-4 ${active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-700 text-slate-400'}`}>
+      <div className={`p-2 rounded-lg mr-4 ${active ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
         <Icon size={20} />
       </div>
       <div className="flex-1">
-        <h3 className={`font-medium ${active ? 'text-emerald-300' : 'text-slate-200'}`}>{config.label}</h3>
+        <h3 className={`font-medium ${active ? 'text-emerald-700' : 'text-slate-700'}`}>{config.label}</h3>
         <p className="text-xs text-slate-500">拖曳以調整順序</p>
       </div>
     </div>
@@ -213,10 +213,10 @@ const Step5Output: React.FC<Step5OutputProps> = ({
       if (isEmpty && generateType) {
           return (
               <div className="flex flex-col items-center justify-center h-full p-8 text-center animate-in fade-in">
-                  <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800 mb-6 max-w-md">
-                      <Sparkles className="mx-auto text-emerald-400 mb-4" size={32} />
-                      <h3 className="text-lg font-bold text-white mb-2">{emptyMessage}</h3>
-                      <p className="text-slate-400 text-sm">
+                  <div className="bg-white p-6 rounded-2xl border border-slate-200 mb-6 max-w-md shadow-sm">
+                      <Sparkles className="mx-auto text-emerald-500 mb-4" size={32} />
+                      <h3 className="text-lg font-bold text-slate-800 mb-2">{emptyMessage}</h3>
+                      <p className="text-slate-500 text-sm">
                           點擊下方按鈕，AI 將根據核心腳本延伸生成此模組。
                       </p>
                   </div>
@@ -225,8 +225,8 @@ const Step5Output: React.FC<Step5OutputProps> = ({
                       disabled={isLoading}
                       className={`flex items-center px-6 py-3 rounded-xl font-bold transition-all transform ${
                           isLoading
-                          ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                          : 'bg-blue-600 hover:bg-blue-500 text-white hover:scale-105 shadow-lg shadow-blue-900/50'
+                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                          : 'bg-blue-600 hover:bg-blue-500 text-white hover:scale-105 shadow-lg shadow-blue-200'
                       }`}
                   >
                       {isLoading ? (
@@ -246,23 +246,23 @@ const Step5Output: React.FC<Step5OutputProps> = ({
       }
 
       return (
-           <div className="prose prose-invert prose-emerald max-w-none">
-             <div className="p-4 bg-slate-900 rounded border border-slate-800 mb-4 text-xs font-mono text-slate-500 flex justify-between items-center">
+           <div className="prose prose-slate max-w-none">
+             <div className="p-4 bg-slate-50 rounded border border-slate-200 mb-4 text-xs font-mono text-slate-500 flex justify-between items-center">
                 <span>[系統訊息]: 以下為 {MODULE_CONFIG[activeTab].label} 完整產出內容。</span>
-                <span className="text-[10px] bg-slate-800 px-2 py-1 rounded">Markdown Mode</span>
+                <span className="text-[10px] bg-white border border-slate-200 px-2 py-1 rounded shadow-sm">Markdown Mode</span>
              </div>
              <ReactMarkdown 
               components={{
                 code(props) {
                   const {children, className, node, ...rest} = props
                   return (
-                    <code className="bg-slate-800 text-orange-300 px-1 py-0.5 rounded text-sm font-mono border border-slate-700" {...rest}>
+                    <code className="bg-slate-100 text-orange-600 px-1 py-0.5 rounded text-sm font-mono border border-slate-200" {...rest}>
                       {children}
                     </code>
                   )
                 },
                 pre(props) {
-                   return <pre className="bg-slate-900 p-4 rounded-lg overflow-x-auto border border-slate-800 my-4" {...props} />
+                   return <pre className="bg-slate-50 p-4 rounded-lg overflow-x-auto border border-slate-200 my-4 text-slate-700" {...props} />
                 }
               }}
              >
@@ -275,25 +275,25 @@ const Step5Output: React.FC<Step5OutputProps> = ({
   return (
     <div className="flex flex-col h-full space-y-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-white flex items-center">
-          <span className="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">5</span>
+        <h2 className="text-xl font-bold text-slate-800 flex items-center">
+          <span className="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm shadow-md shadow-emerald-200">5</span>
           六大模組產出 (Big 6 Production)
         </h2>
         <div className="flex gap-2">
             <button 
                 onClick={onBack}
                 disabled={isLoading}
-                className="flex items-center text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition-colors border border-slate-700"
+                className="flex items-center text-xs bg-white hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded transition-colors border border-slate-200 shadow-sm"
             >
                 <ArrowLeft size={14} className="mr-2" />
                 返回選角
             </button>
             <button 
                 onClick={() => setIsReordering(!isReordering)}
-                className={`flex items-center text-xs px-3 py-1.5 rounded transition-colors border ${
+                className={`flex items-center text-xs px-3 py-1.5 rounded transition-colors border shadow-sm ${
                     isReordering 
                     ? 'bg-emerald-600 text-white border-emerald-500' 
-                    : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
+                    : 'bg-white hover:bg-slate-50 text-slate-600 border-slate-200'
                 }`}
             >
                 <Settings2 size={14} className="mr-2" />
@@ -301,7 +301,7 @@ const Step5Output: React.FC<Step5OutputProps> = ({
             </button>
             <button 
                 onClick={handleExportTxt}
-                className="flex items-center text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded transition-colors border border-slate-700"
+                className="flex items-center text-xs bg-white hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded transition-colors border border-slate-200 shadow-sm"
             >
                 <Download size={14} className="mr-2" />
                 匯出全部 (TXT)
@@ -309,9 +309,9 @@ const Step5Output: React.FC<Step5OutputProps> = ({
         </div>
       </div>
 
-      <div className="bg-slate-800/50 rounded-xl border border-slate-700 flex-1 flex flex-col overflow-hidden">
+      <div className="bg-white rounded-xl border border-slate-200 flex-1 flex flex-col overflow-hidden shadow-sm">
         {/* Tabs */}
-        <div className="flex border-b border-slate-700 bg-slate-900/50 overflow-x-auto">
+        <div className="flex border-b border-slate-200 bg-slate-50 overflow-x-auto">
           {moduleOrder.map((type) => {
               const config = MODULE_CONFIG[type];
               const Icon = config.icon;
@@ -323,7 +323,7 @@ const Step5Output: React.FC<Step5OutputProps> = ({
                         setIsReordering(false);
                     }}
                     className={`flex items-center px-4 md:px-6 py-3 text-sm font-medium transition-colors whitespace-nowrap ${
-                    activeTab === type && !isReordering ? 'text-emerald-400 border-b-2 border-emerald-400 bg-emerald-900/10' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    activeTab === type && !isReordering ? 'text-emerald-600 border-b-2 border-emerald-500 bg-emerald-50' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
                     }`}
                 >
                     <Icon size={16} className="mr-2" />
@@ -334,10 +334,10 @@ const Step5Output: React.FC<Step5OutputProps> = ({
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-slate-950">
+        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar bg-white">
            {isReordering ? (
                <div className="max-w-2xl mx-auto">
-                   <div className="mb-6 p-4 bg-blue-900/20 border border-blue-800 rounded-lg text-blue-200 text-sm">
+                   <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm">
                        <p className="flex items-center font-bold mb-1">
                            <Settings2 size={16} className="mr-2" />
                            調整模組順序

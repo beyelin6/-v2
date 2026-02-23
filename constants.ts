@@ -375,6 +375,25 @@ Schema:
 ]
 `;
 
+export const GENERATE_SHAPE_SIMILAR_DETAILS_PROMPT = `
+[INSTRUCTION]
+The user wants to generate detailed information for a specific Shape-Similar Character (形近字).
+Input Character: "{CHAR}"
+
+Objective:
+Provide the Radical (部首), Common Words (造詞), and a brief Explanation (解釋) of the radical's meaning for this character.
+
+⚠️ Output format: Valid JSON Object ONLY. No Markdown.
+
+Schema:
+{
+  "char": "{CHAR}",
+  "radical": "Radical (e.g. 言部)",
+  "words": "Common Word (e.g. 辯論)",
+  "explanation": "Brief explanation of radical difference (e.g. 中間是言，表示用語言爭論)"
+}
+`;
+
 export const GENERATE_MNEMONIC_PROMPT = `
 [INSTRUCTION]
 Generate a high-quality Chinese mnemonic (辨析筆記/口訣) for the provided shape-similar characters.

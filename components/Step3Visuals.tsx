@@ -82,11 +82,11 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
   if (parseError || !data) {
      return (
       <div className="flex flex-col h-full space-y-6">
-        <div className="bg-red-900/20 border border-red-500/50 p-6 rounded-2xl flex items-center text-red-200 backdrop-blur-md">
+        <div className="bg-red-50 border border-red-200 p-6 rounded-2xl flex items-center text-red-700">
            <AlertCircle className="mr-3" size={24} />
            {parseError || "資料載入中..."}
         </div>
-        <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-700/50 max-h-96 overflow-y-auto whitespace-pre-wrap font-mono text-sm shadow-inner custom-scrollbar">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200 max-h-96 overflow-y-auto whitespace-pre-wrap font-mono text-sm text-slate-600 shadow-inner custom-scrollbar">
            {visualResult}
         </div>
       </div>
@@ -99,24 +99,25 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
          <div className="space-y-8 animate-in fade-in slide-in-from-right-8 duration-500">
             
             {/* Header */}
-            <div className="space-y-2">
-                <h2 className="text-2xl font-bold text-white flex items-center text-glow-emerald">
-                    <span className="bg-emerald-600/80 backdrop-blur text-white w-8 h-8 rounded-lg flex items-center justify-center mr-3 text-sm shadow-[0_0_15px_rgba(16,185,129,0.5)]">3</span>
-                    形式與風格 (Flexible Skin)
-                </h2>
-                <p className="text-slate-400 text-sm ml-11">
+            <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-slate-800 flex items-center">
+                        <span className="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm shadow-md shadow-emerald-200">3</span>
+                        形式與風格 (Flexible Skin)
+                    </h2>
+                </div>
+                <p className="text-slate-500 text-sm">
                     決定投影片的「物理屬性」。請為您的課程選擇最適合的視覺外衣與結構骨架。
                 </p>
             </div>
 
             {/* AI Consistency Check */}
             {data.consistencyAnalysis && (
-                <div className="bg-emerald-950/30 border border-emerald-500/20 rounded-xl p-4 flex items-start backdrop-blur-sm relative overflow-hidden">
-                    <div className="absolute inset-0 bg-emerald-500/5 pointer-events-none"></div>
-                    <Sparkles className="flex-shrink-0 mr-3 mt-1 text-emerald-400" size={18} />
+                <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start shadow-sm relative overflow-hidden">
+                    <Sparkles className="flex-shrink-0 mr-3 mt-1 text-emerald-600" size={18} />
                     <div>
-                        <h3 className="text-emerald-300 font-bold text-sm mb-1">AI 風格一致性檢核</h3>
-                        <p className="text-slate-300 text-sm leading-relaxed opacity-90">{data.consistencyAnalysis}</p>
+                        <h3 className="text-emerald-800 font-bold text-sm mb-1">AI 風格一致性檢核</h3>
+                        <p className="text-slate-600 text-sm leading-relaxed">{data.consistencyAnalysis}</p>
                     </div>
                 </div>
             )}
@@ -124,11 +125,11 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
             {/* Styles Grid */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-blue-300 flex items-center">
-                        <Palette className="mr-2 text-blue-400" size={20}/> 
+                    <h3 className="text-lg font-bold text-blue-700 flex items-center">
+                        <Palette className="mr-2 text-blue-500" size={20}/> 
                         推薦視覺風格 (Visual Style)
                     </h3>
-                    <span className="text-xs bg-blue-900/40 text-blue-200 px-3 py-1 rounded-full border border-blue-500/30 flex items-center">
+                    <span className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full border border-blue-200 flex items-center font-medium">
                         <Check size={12} className="mr-1"/> 可複選混搭 / 自訂
                     </span>
                 </div>
@@ -143,26 +144,26 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
                                 onClick={() => toggleStyle(style.code)}
                                 className={`p-5 rounded-2xl text-left transition-all border relative overflow-hidden group h-full flex flex-col ${
                                     isSelected 
-                                    ? 'bg-blue-600/20 border-blue-400 shadow-[0_0_20px_-5px_rgba(37,99,235,0.4)]' 
-                                    : 'bg-slate-900/40 border-slate-700/50 hover:bg-slate-800/60 hover:border-blue-400/30 hover:shadow-lg'
+                                    ? 'bg-blue-50 border-blue-400 shadow-md shadow-blue-100' 
+                                    : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-md'
                                 }`}
                             >
                                 <div className="flex justify-between items-start mb-3">
-                                    <span className={`font-bold text-lg ${isSelected ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
+                                    <span className={`font-bold text-lg ${isSelected ? 'text-blue-800' : 'text-slate-700 group-hover:text-blue-700'}`}>
                                         {style.name}
                                     </span>
-                                    <span className="text-[10px] font-mono bg-black/40 px-2 py-1 rounded text-slate-400 border border-white/5">
+                                    <span className="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-500 border border-slate-200">
                                         {style.code}
                                     </span>
                                 </div>
-                                <p className="text-sm text-slate-400 leading-relaxed flex-1 group-hover:text-slate-300 transition-colors">
+                                <p className="text-sm text-slate-500 leading-relaxed flex-1 group-hover:text-slate-600 transition-colors">
                                     {style.reason}
                                 </p>
                                 
                                 {/* Selection Indicator */}
                                 <div className={`absolute inset-0 border-2 rounded-2xl pointer-events-none transition-opacity duration-300 ${isSelected ? 'border-blue-500 opacity-100' : 'border-transparent opacity-0'}`}></div>
                                 {isSelected && (
-                                    <div className="absolute top-0 right-0 bg-blue-500 rounded-bl-xl p-1.5 shadow-lg">
+                                    <div className="absolute top-0 right-0 bg-blue-500 rounded-bl-xl p-1.5 shadow-sm">
                                         <Check size={14} className="text-white" />
                                     </div>
                                 )}
@@ -174,12 +175,12 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
                     <div 
                         className={`p-1 rounded-2xl border transition-all relative overflow-hidden flex flex-col ${
                             customStyle.isActive
-                            ? 'bg-indigo-600/10 border-indigo-400 shadow-[0_0_20px_-5px_rgba(99,102,241,0.3)]' 
-                            : 'bg-slate-900/40 border-slate-700/50 border-dashed hover:border-indigo-400/50'
+                            ? 'bg-indigo-50 border-indigo-400 shadow-md shadow-indigo-100' 
+                            : 'bg-slate-50 border-slate-200 border-dashed hover:border-indigo-300'
                         }`}
                     >
                         {!isEditingCustom && !customStyle.isActive ? (
-                             <button onClick={() => { setIsEditingCustom(true); setCustomStyle({...customStyle, isActive: true}); }} className="w-full h-full flex flex-col items-center justify-center min-h-[160px] text-slate-500 hover:text-indigo-300 transition-colors">
+                             <button onClick={() => { setIsEditingCustom(true); setCustomStyle({...customStyle, isActive: true}); }} className="w-full h-full flex flex-col items-center justify-center min-h-[160px] text-slate-400 hover:text-indigo-500 transition-colors">
                                 <Plus size={32} className="mb-2 opacity-50"/>
                                 <span className="font-bold">自訂風格</span>
                                 <span className="text-xs opacity-60 mt-1">混合或創造新視覺</span>
@@ -187,13 +188,13 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
                         ) : (
                             <div className="p-4 flex flex-col h-full relative">
                                 <div className="flex justify-between items-center mb-3">
-                                    <span className="text-indigo-300 font-bold flex items-center">
+                                    <span className="text-indigo-700 font-bold flex items-center">
                                         <Edit3 size={16} className="mr-2"/> 自訂參數
                                     </span>
                                     <div className="flex gap-2">
                                         <button 
                                             onClick={() => setCustomStyle({...customStyle, isActive: !customStyle.isActive})}
-                                            className={`text-[10px] px-2 py-1 rounded-full border ${customStyle.isActive ? 'bg-indigo-500 text-white border-indigo-400' : 'bg-slate-800 text-slate-500 border-slate-600'}`}
+                                            className={`text-[10px] px-2 py-1 rounded-full border ${customStyle.isActive ? 'bg-indigo-500 text-white border-indigo-400' : 'bg-slate-200 text-slate-500 border-slate-300'}`}
                                         >
                                             {customStyle.isActive ? "已啟用" : "已停用"}
                                         </button>
@@ -201,20 +202,20 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
                                 </div>
                                 
                                 <input 
-                                    className="bg-slate-950 border border-slate-700 rounded p-2 text-white text-sm mb-2 focus:border-indigo-500 outline-none placeholder-slate-600"
+                                    className="bg-white border border-slate-300 rounded p-2 text-slate-800 text-sm mb-2 focus:ring-2 focus:ring-indigo-500 outline-none placeholder-slate-400"
                                     placeholder="風格名稱 (例: 賽博龐克宮崎駿)"
                                     value={customStyle.name}
                                     onChange={(e) => setCustomStyle({...customStyle, name: e.target.value})}
                                 />
                                 <textarea 
-                                    className="bg-slate-950 border border-slate-700 rounded p-2 text-slate-300 text-xs flex-1 focus:border-indigo-500 outline-none resize-none placeholder-slate-600 leading-relaxed"
+                                    className="bg-white border border-slate-300 rounded p-2 text-slate-600 text-xs flex-1 focus:ring-2 focus:ring-indigo-500 outline-none resize-none placeholder-slate-400 leading-relaxed"
                                     placeholder="視覺描述 (例: 霓虹燈光、機械細節、溫暖手繪質感...)"
                                     value={customStyle.desc}
                                     onChange={(e) => setCustomStyle({...customStyle, desc: e.target.value})}
                                 />
 
                                 {customStyle.isActive && (
-                                     <div className="absolute top-0 right-0 bg-indigo-500 rounded-bl-xl p-1.5 shadow-lg pointer-events-none">
+                                     <div className="absolute top-0 right-0 bg-indigo-500 rounded-bl-xl p-1.5 shadow-sm pointer-events-none">
                                         <Check size={14} className="text-white" />
                                     </div>
                                 )}
@@ -227,21 +228,21 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
             {/* Metaphors Grid */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-purple-300 flex items-center">
-                        <Box className="mr-2 text-purple-400" size={20}/> 
+                    <h3 className="text-lg font-bold text-purple-700 flex items-center">
+                        <Box className="mr-2 text-purple-500" size={20}/> 
                         推薦結構隱喻 (Structural Metaphor)
                     </h3>
-                     <span className="text-xs bg-slate-800 text-slate-500 px-3 py-1 rounded-full border border-slate-700">
+                     <span className="text-xs bg-slate-100 text-slate-500 px-3 py-1 rounded-full border border-slate-200 font-medium">
                         單選 (結構骨架)
                     </span>
                 </div>
                 
                 {/* Explanatory Block */}
-                <div className="bg-purple-950/20 border border-purple-500/20 rounded-xl p-4 flex items-start text-sm text-purple-200 backdrop-blur-sm">
-                    <Info className="flex-shrink-0 mr-3 mt-0.5 text-purple-400" size={18} />
+                <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 flex items-start text-sm text-purple-800 shadow-sm">
+                    <Info className="flex-shrink-0 mr-3 mt-0.5 text-purple-500" size={18} />
                     <div className="flex-1">
-                        <span className="font-bold block mb-1 text-purple-300">P3 結構視圖 (The Fusion Map)</span>
-                        <p className="opacity-80 leading-relaxed text-xs">
+                        <span className="font-bold block mb-1 text-purple-700">P3 結構視圖 (The Fusion Map)</span>
+                        <p className="opacity-80 leading-relaxed text-xs text-purple-900">
                             系統將把課文的「意義段 (骨架)」轉化為您選擇的「視覺隱喻 (皮肉)」。
                             例如選擇「冒險地圖」，段落將變為地圖站點；選擇「漢堡圖」，段落將變為層層堆疊的食材。
                         </p>
@@ -255,24 +256,24 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
                             onClick={() => setSelectedMetaphor(meta)}
                             className={`p-5 rounded-2xl text-left transition-all border relative overflow-hidden group h-full flex flex-col ${
                                 selectedMetaphor?.code === meta.code 
-                                ? 'bg-purple-600/20 border-purple-400 shadow-[0_0_30px_-10px_rgba(147,51,234,0.5)]' 
-                                : 'bg-slate-900/40 border-slate-700/50 hover:bg-slate-800/60 hover:border-purple-400/30 hover:shadow-lg'
+                                ? 'bg-purple-50 border-purple-400 shadow-md shadow-purple-100' 
+                                : 'bg-white border-slate-200 hover:border-purple-300 hover:shadow-md'
                             }`}
                         >
                             <div className="flex justify-between items-start mb-3">
-                                <span className={`font-bold text-lg ${selectedMetaphor?.code === meta.code ? 'text-white' : 'text-slate-200 group-hover:text-white'}`}>
+                                <span className={`font-bold text-lg ${selectedMetaphor?.code === meta.code ? 'text-purple-800' : 'text-slate-700 group-hover:text-purple-700'}`}>
                                     {meta.name}
                                 </span>
-                                <span className="text-[10px] font-mono bg-black/40 px-2 py-1 rounded text-slate-400 border border-white/5">
+                                <span className="text-[10px] font-mono bg-slate-100 px-2 py-1 rounded text-slate-500 border border-slate-200">
                                     {meta.code}
                                 </span>
                             </div>
                             <div className="flex items-start gap-3 flex-1">
-                                <div className="text-xs text-purple-300 font-mono bg-purple-500/10 border border-purple-500/20 px-3 py-2 rounded-lg flex-shrink-0 mt-1 max-w-[120px] text-center">
+                                <div className="text-xs text-purple-700 font-mono bg-purple-100 border border-purple-200 px-3 py-2 rounded-lg flex-shrink-0 mt-1 max-w-[120px] text-center">
                                     <Layout size={16} className="mx-auto mb-1 opacity-70"/>
                                     {meta.visual.split(' ')[0] || "Visual"}
                                 </div>
-                                <p className="text-sm text-slate-400 leading-relaxed group-hover:text-slate-300">
+                                <p className="text-sm text-slate-500 leading-relaxed group-hover:text-slate-600">
                                     {meta.reason}
                                 </p>
                             </div>
@@ -280,7 +281,7 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
                             {/* Selection Indicator */}
                             <div className={`absolute inset-0 border-2 rounded-2xl pointer-events-none transition-opacity duration-300 ${selectedMetaphor?.code === meta.code ? 'border-purple-500 opacity-100' : 'border-transparent opacity-0'}`}></div>
                             {selectedMetaphor?.code === meta.code && (
-                                <div className="absolute top-0 right-0 bg-purple-500 rounded-bl-xl p-1.5 shadow-lg">
+                                <div className="absolute top-0 right-0 bg-purple-500 rounded-bl-xl p-1.5 shadow-sm">
                                     <Check size={14} className="text-white" />
                                     </div>
                             )}
@@ -292,11 +293,11 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
       </div>
 
        {/* --- CONFIRM BUTTON (STICKY FOOTER) --- */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 bg-slate-950/80 backdrop-blur-xl border-t border-white/5 flex justify-center gap-4 z-20 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)]">
+      <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-200 flex justify-center gap-4 z-10 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]">
              <button
                 onClick={onBack}
                 disabled={isLoading}
-                className="px-6 py-3 text-slate-300 font-bold rounded-xl border border-slate-700 hover:bg-slate-800 transition-all flex items-center justify-center disabled:opacity-50 hover:border-slate-500"
+                className="px-6 py-3 text-slate-600 font-bold rounded-xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center disabled:opacity-50"
              >
                 <ArrowLeft className="mr-2" size={20} />
                 返回上一步
@@ -304,10 +305,10 @@ const Step3Visuals: React.FC<Step3VisualsProps> = ({ visualResult, onConfirmVisu
              <button
                 onClick={handleConfirm}
                 disabled={!hasValidSelection || isLoading}
-                className={`flex-1 max-w-xl py-3 text-white font-bold rounded-xl shadow-xl transition-all flex items-center justify-center transform hover:-translate-y-0.5 ${
+                className={`flex-1 max-w-xl py-3 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center ${
                     !hasValidSelection || isLoading
-                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700' 
-                    : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 border border-purple-400/30 shadow-purple-900/50'
+                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
+                    : 'bg-teal-600 hover:bg-teal-500 shadow-teal-200'
                 }`}
              >
                  {isLoading ? (

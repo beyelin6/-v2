@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Key, ExternalLink, HelpCircle, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Key, Eye, EyeOff, ExternalLink, AlertCircle, Check } from 'lucide-react';
 
 interface ApiKeyModalProps {
   onConfirm: (key: string) => void;
@@ -8,78 +8,144 @@ interface ApiKeyModalProps {
 }
 
 const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onConfirm, onClose, hasExistingKey }) => {
-  const [inputKey, setInputKey] = useState('');
+  const [keyInput, setKeyInput] = useState('');
+  const [showKey, setShowKey] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  // 進入此畫面時自動聚焦 (如果原本沒有 Key)
+  useEffect(() => {
+    if (!hasExistingKey) {
+      const inputEl = document.getElementById('api-key-input');
+      if (inputEl) inputEl.focus();
+    }
+  }, [hasExistingKey]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputKey.trim()) {
-      onConfirm(inputKey.trim());
+    const trimmedKey = keyInput.trim();
+    
+    // 防呆驗證 1：空白檢查
+    if (!trimmedKey) {
+      setError('請輸入 API Key');
+      return;
     }
+    
+    // 防呆驗證 2：Gemini 金鑰格式檢查 (通常以 AIza 開頭)
+    if (!trimmedKey.startsWith('AIza') || trimmedKey.length < 30) {
+      setError('這看起來不像有效的 Gemini API Key (應以 AIza 開頭)');
+      return;
+    }
+
+    setError(null);
+    onConfirm(trimmedKey);
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-sm animate-in fade-in zoom-in duration-300 relative">
-        {hasExistingKey && onClose && (
-            <button 
-                onClick={onClose}
-                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors"
-            >
-                <X size={20} />
-            </button>
-        )}
-
-        <div className="flex items-center justify-between mb-2">
-          <h3 className="text-slate-800 font-bold text-lg">
-             Gemini API Key 設定
-          </h3>
-          <div className="flex gap-2 text-slate-400">
-            {!onClose && <Key size={20} />}
-            <div title="請輸入 Google AI Studio 提供的 API Key">
-                <HelpCircle size={20} className="cursor-help" />
-            </div>
+    // [重構] 乾淨的深灰色遮罩，不使用毛玻璃，凸顯中央純白卡片
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-800/40 p-4 animate-in fade-in duration-200">
+      
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200">
+        
+        {/* Header 區塊 */}
+        <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3 bg-slate-50/50">
+          <div className="p-2 bg-teal-50 text-teal-600 rounded-lg">
+            <Key size={20} />
+          </div>
+          <div>
+            <h2 className="text-lg font-bold text-slate-800">設定系統引擎 (API Key)</h2>
+            <p className="text-xs text-slate-500 mt-0.5">V-MAX 架構需要 Gemini 權限來執行分析</p>
           </div>
         </div>
-        
-        <p className="text-slate-500 text-sm mb-4 leading-relaxed">
-          若尚未擁有 API Key，請前往 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-600 font-bold hover:underline inline-flex items-center">Google AI Studio <ExternalLink size={12} className="ml-0.5"/></a> 建立並複製。
-        </p>
 
-        <form onSubmit={handleSubmit}>
+        {/* 內容表單區塊 */}
+        <form onSubmit={handleSubmit} className="p-6">
+          
           <div className="mb-4">
-            <div className="relative">
-                <input
-                  type="password"
-                  value={inputKey}
-                  onChange={(e) => setInputKey(e.target.value)}
-                  placeholder="貼上您的 API Key..."
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 block p-3 outline-none transition-all placeholder-slate-400"
-                  autoFocus
-                />
-            </div>
+            <label htmlFor="api-key-input" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Google Gemini API Key
+            </label>
             
-            <div className="flex justify-end mt-1">
-                 <a 
-                  href="https://aistudio.google.com/app/apikey" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-blue-600 text-xs flex items-center transition-colors"
-                >
-                  <ExternalLink size={10} className="mr-1" />
-                  快速前往取得 Key
-                </a>
+            {/* 輸入框群組 */}
+            <div className={`relative flex items-center border rounded-xl transition-all duration-200 bg-slate-50 ${
+              error ? 'border-red-300 ring-4 ring-red-50' : 
+              isFocused ? 'border-teal-400 ring-4 ring-teal-50 bg-white' : 'border-slate-200 hover:border-slate-300'
+            }`}>
+              
+              <input
+                id="api-key-input"
+                type={showKey ? 'text' : 'password'}
+                value={keyInput}
+                onChange={(e) => {
+                  setKeyInput(e.target.value);
+                  if (error) setError(null); // 輸入時自動清除錯誤
+                }}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                className="w-full py-2.5 pl-4 pr-12 bg-transparent text-slate-800 focus:outline-none font-mono text-sm placeholder:text-slate-400 placeholder:font-sans"
+                placeholder={hasExistingKey ? "•••••••••••••••••••••••• (已設定)" : "輸入 AIza 開頭的金鑰..."}
+                autoComplete="off"
+              />
+              
+              {/* 顯示/隱藏密碼按鈕 */}
+              <button
+                type="button"
+                onClick={() => setShowKey(!showKey)}
+                className="absolute right-3 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-md transition-colors"
+                tabIndex={-1}
+              >
+                {showKey ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+
+            {/* 錯誤訊息提示 */}
+            {error && (
+              <div className="flex items-center gap-1.5 mt-2 text-red-600 text-xs font-medium animate-in slide-in-from-top-1">
+                <AlertCircle size={14} />
+                <span>{error}</span>
+              </div>
+            )}
+          </div>
+
+          {/* 取得金鑰的教學指引 */}
+          <div className="bg-slate-50 rounded-lg p-3 border border-slate-100 mb-6 flex items-start gap-2.5">
+            <div className="mt-0.5 text-slate-400">
+              <ExternalLink size={14} />
+            </div>
+            <div className="text-xs text-slate-600 leading-relaxed">
+              還沒有金鑰嗎？請前往{' '}
+              <a 
+                href="https://aistudio.google.com/app/apikey" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-teal-600 font-medium hover:text-teal-700 underline underline-offset-2"
+              >
+                Google AI Studio
+              </a>
+              {' '}免費建立一組。您的金鑰僅會儲存在本地瀏覽器，不會回傳至任何第三方伺服器。
             </div>
           </div>
 
-          <div className="flex justify-end mt-6">
+          {/* 底部按鈕區 */}
+          <div className="flex justify-end gap-3 pt-2">
+            {onClose && (
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                取消
+              </button>
+            )}
             <button
               type="submit"
-              disabled={!inputKey.trim()}
-              className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-blue-200 w-full"
+              className="flex items-center gap-2 px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-medium rounded-lg transition-colors shadow-sm focus:ring-4 focus:ring-slate-200"
             >
-              確認使用
+              <Check size={16} />
+              <span>儲存並啟動系統</span>
             </button>
           </div>
+
         </form>
       </div>
     </div>

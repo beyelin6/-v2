@@ -10,6 +10,7 @@ interface Step2DeepProps {
   onGenerateMnemonic: (chars: ShapeSimilarItem[]) => Promise<string>;
   onGeneratePolyphonic: (char: string) => Promise<PolyphonicItem[]>;
   onGenerateShapeSimilar: (char: string) => Promise<ShapeSimilarItem[]>;
+  onGenerateShapeSimilarDetails: (char: string) => Promise<ShapeSimilarItem | null>;
   onBack: () => void;
 }
 
@@ -21,6 +22,7 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
     onGenerateMnemonic,
     onGeneratePolyphonic,
     onGenerateShapeSimilar,
+    onGenerateShapeSimilarDetails,
     onBack
 }) => {
   const [data, setData] = useState<AnalysisData | null>(null);
@@ -30,6 +32,7 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
   const [isGeneratingMnemonic, setIsGeneratingMnemonic] = useState(false);
   const [isGeneratingPolyphonic, setIsGeneratingPolyphonic] = useState(false);
   const [isGeneratingShapeSimilar, setIsGeneratingShapeSimilar] = useState(false);
+  const [isGeneratingShapeSimilarDetails, setIsGeneratingShapeSimilarDetails] = useState<number | null>(null);
   
   // Edit states
   const [editingIndex, setEditingIndex] = useState<number>(-1);
@@ -130,6 +133,28 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
       }
   };
 
+  const handleGenShapeSimilarDetails = async (index: number, char: string) => {
+    if (!char) {
+        alert("請先輸入國字。");
+        return;
+    }
+    setIsGeneratingShapeSimilarDetails(index);
+    try {
+        const result = await onGenerateShapeSimilarDetails(char);
+        if (result) {
+            const newArr = [...(tempEditValue.shapeSimilar || [])];
+            newArr[index] = { ...newArr[index], ...result };
+            setTempEditValue({ ...tempEditValue, shapeSimilar: newArr });
+        } else {
+            alert("AI 無法生成此字的詳細資料。");
+        }
+    } catch (e) {
+        alert("生成失敗，請稍後再試。");
+    } finally {
+        setIsGeneratingShapeSimilarDetails(null);
+    }
+  };
+
   // --- CRUD Operations ---
   const deleteItem = (index: number) => {
     if (!data) return;
@@ -200,11 +225,27 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
                          </button>
                      </div>
                     {(tempEditValue.shapeSimilar || []).map((item: any, i: number) => (
-                        <div key={i} className="flex gap-1">
-                            <input className="w-12 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.char} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].char = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="字" />
-                             <input className="w-16 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.radical} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].radical = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="部首" />
+                        <div key={i} className="flex gap-1 items-center">
+                            <div className="relative">
+                                <input 
+                                    className="w-12 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white pr-4" 
+                                    value={item.char} 
+                                    onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].char = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} 
+                                    placeholder="字" 
+                                />
+                                <button 
+                                    onClick={() => handleGenShapeSimilarDetails(i, item.char)}
+                                    disabled={isGeneratingShapeSimilarDetails === i || !item.char}
+                                    className="absolute -right-5 top-1.5 text-emerald-400 hover:text-emerald-300 disabled:opacity-30 transition-colors z-10"
+                                    title="AI 自動生成部首與造詞"
+                                >
+                                    {isGeneratingShapeSimilarDetails === i ? <RefreshCw size={12} className="animate-spin" /> : <Wand2 size={12} />}
+                                </button>
+                            </div>
+                             <input className="w-16 ml-6 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.radical} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].radical = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="部首" />
                              <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.words} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].words = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="造詞" />
                              <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-slate-400" value={item.explanation} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].explanation = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="解釋部首差異" />
+                             <button onClick={() => { const newArr = [...tempEditValue.shapeSimilar]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} className="text-slate-600 hover:text-red-400 p-1"><Trash2 size={12} /></button>
                         </div>
                     ))}
                     <button onClick={() => { const newArr = [...(tempEditValue.shapeSimilar || []), { char: '', radical: '', words: '', explanation: '' }]; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} className="text-xs text-blue-400 flex items-center"><Plus size={10} className="mr-1"/>新增辨析</button>

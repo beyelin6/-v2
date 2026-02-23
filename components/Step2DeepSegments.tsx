@@ -251,11 +251,11 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
   if (parseError || !data) {
     return (
       <div className="flex flex-col h-full space-y-6">
-        <div className="bg-red-900/20 border border-red-500/50 p-4 rounded-lg flex items-center text-red-200">
+        <div className="bg-red-50 border border-red-200 p-4 rounded-lg flex items-center text-red-700">
            <AlertCircle className="mr-2" size={20} />
            {parseError || "深度資料載入中..."}
         </div>
-        <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 max-h-96 overflow-y-auto whitespace-pre-wrap font-mono text-sm">
+        <div className="bg-white p-6 rounded-xl border border-slate-200 max-h-96 overflow-y-auto whitespace-pre-wrap font-mono text-sm text-slate-600 shadow-sm">
            {deepSegmentsResult}
         </div>
       </div>
@@ -271,82 +271,82 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
              {/* Header */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-white flex items-center">
-                        <span className="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm">2.75</span>
+                    <h2 className="text-xl font-bold text-slate-800 flex items-center">
+                        <span className="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 text-sm shadow-md shadow-emerald-200">2.75</span>
                         深度解構 (Deep Segments)
                     </h2>
                 </div>
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-500 text-sm">
                     Step 2.75 階段確認：意義段劃分與教學策略發想。確認無誤後，AI 將進行「形式與風格 (Step 3)」。
                 </p>
             </div>
 
             {/* 1. Segments Section */}
-            <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden">
-                <div className="bg-slate-800/80 px-4 py-2 border-b border-slate-700 flex justify-between items-center">
-                    <h3 className="font-bold text-slate-200 text-sm">意義段分析 (Segments)</h3>
+            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
+                    <h3 className="font-bold text-slate-700 text-sm">意義段分析 (Segments)</h3>
                     <span className="text-xs text-slate-500">{data.segments.length} 段落</span>
                 </div>
-                <div className="divide-y divide-slate-800">
+                <div className="divide-y divide-slate-100">
                     {data.segments.map((item, idx) => (
-                        <div key={idx} className="p-4 hover:bg-slate-800/30 transition-colors group">
+                        <div key={idx} className="p-4 hover:bg-slate-50 transition-colors group">
                              {editingSection === 'segment' && editingIndex === idx ? (
-                                <div className="space-y-4 bg-slate-800/40 p-3 rounded-lg border border-slate-600 shadow-inner">
+                                <div className="space-y-4 bg-slate-50 p-3 rounded-lg border border-slate-200 shadow-inner">
                                     <div className="flex justify-between items-center">
-                                        <h4 className="text-white text-xs font-bold uppercase tracking-wider">編輯段落 {idx + 1}</h4>
-                                        <button onClick={cancelEdit} className="text-slate-500 hover:text-white"><X size={16}/></button>
+                                        <h4 className="text-slate-700 text-xs font-bold uppercase tracking-wider">編輯段落 {idx + 1}</h4>
+                                        <button onClick={cancelEdit} className="text-slate-400 hover:text-slate-600"><X size={16}/></button>
                                     </div>
                                     
-                                    <input className="bg-slate-950 border border-slate-700 rounded p-2 text-white text-sm w-full font-bold focus:border-blue-500 outline-none" value={tempEditValue.title} onChange={(e) => setTempEditValue({...tempEditValue, title: e.target.value})} placeholder="段落標題" />
+                                    <input className="bg-white border border-slate-300 rounded p-2 text-slate-900 text-sm w-full font-bold focus:ring-2 focus:ring-blue-500 outline-none" value={tempEditValue.title} onChange={(e) => setTempEditValue({...tempEditValue, title: e.target.value})} placeholder="段落標題" />
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {/* Keywords Chip Editor */}
                                         <div className="space-y-2">
-                                            <label className="text-xs text-emerald-400 font-bold uppercase flex items-center">
+                                            <label className="text-xs text-emerald-600 font-bold uppercase flex items-center">
                                                 <Brain size={12} className="mr-1" />
                                                 心智圖細節 (Keywords)
                                             </label>
-                                            <div className="bg-slate-950 border border-slate-700 rounded p-2 min-h-[60px] flex flex-wrap gap-2">
+                                            <div className="bg-white border border-slate-300 rounded p-2 min-h-[60px] flex flex-wrap gap-2">
                                                 {(tempEditValue.keywords || []).map((kw: string, i: number) => (
-                                                    <div key={i} className="bg-emerald-900/30 border border-emerald-500/30 text-emerald-300 text-xs px-2 py-1 rounded-full flex items-center">
+                                                    <div key={i} className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-2 py-1 rounded-full flex items-center">
                                                         {kw}
-                                                        <button onClick={() => removeKeyword(i)} className="ml-1 hover:text-white text-emerald-500/70"><X size={12}/></button>
+                                                        <button onClick={() => removeKeyword(i)} className="ml-1 hover:text-emerald-900 text-emerald-500"><X size={12}/></button>
                                                     </div>
                                                 ))}
                                                 <div className="flex items-center gap-1 flex-1 min-w-[100px]">
                                                     <input 
-                                                        className="bg-transparent text-white text-xs outline-none w-full placeholder-slate-600" 
+                                                        className="bg-transparent text-slate-800 text-xs outline-none w-full placeholder-slate-400" 
                                                         value={keywordInput}
                                                         onChange={(e) => setKeywordInput(e.target.value)}
                                                         onKeyDown={(e) => e.key === 'Enter' && addKeyword()}
                                                         placeholder="+ 新增關鍵詞 (Enter)"
                                                     />
-                                                    <button onClick={addKeyword} disabled={!keywordInput.trim()} className="text-slate-500 hover:text-emerald-400"><Plus size={14}/></button>
+                                                    <button onClick={addKeyword} disabled={!keywordInput.trim()} className="text-slate-400 hover:text-emerald-600"><Plus size={14}/></button>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {/* Difficult Words Chip Editor */}
                                         <div className="space-y-2">
-                                            <label className="text-xs text-blue-400 font-bold uppercase flex items-center justify-between">
+                                            <label className="text-xs text-blue-600 font-bold uppercase flex items-center justify-between">
                                                 <span className="flex items-center"><Sparkles size={12} className="mr-1" />段落難詞 (Difficult Words)</span>
                                             </label>
-                                            <div className="bg-slate-950 border border-slate-700 rounded p-2 min-h-[60px] flex flex-wrap gap-2">
+                                            <div className="bg-white border border-slate-300 rounded p-2 min-h-[60px] flex flex-wrap gap-2">
                                                 {(tempEditValue.difficultWords || []).map((dw: string, i: number) => (
-                                                    <div key={i} className="bg-blue-900/30 border border-blue-500/30 text-blue-300 text-xs px-2 py-1 rounded-full flex items-center">
+                                                    <div key={i} className="bg-blue-50 border border-blue-200 text-blue-700 text-xs px-2 py-1 rounded-full flex items-center">
                                                         {dw}
-                                                        <button onClick={() => removeDiffWord(i)} className="ml-1 hover:text-white text-blue-500/70"><X size={12}/></button>
+                                                        <button onClick={() => removeDiffWord(i)} className="ml-1 hover:text-blue-900 text-blue-500"><X size={12}/></button>
                                                     </div>
                                                 ))}
                                                 <div className="flex items-center gap-1 flex-1 min-w-[100px]">
                                                     <input 
-                                                        className="bg-transparent text-white text-xs outline-none w-full placeholder-slate-600" 
+                                                        className="bg-transparent text-slate-800 text-xs outline-none w-full placeholder-slate-400" 
                                                         value={diffWordInput}
                                                         onChange={(e) => setDiffWordInput(e.target.value)}
                                                         onKeyDown={(e) => e.key === 'Enter' && addDiffWord()}
                                                         placeholder="+ 新增難詞 (Enter)"
                                                     />
-                                                     <button onClick={addDiffWord} disabled={!diffWordInput.trim()} className="text-slate-500 hover:text-blue-400"><Plus size={14}/></button>
+                                                     <button onClick={addDiffWord} disabled={!diffWordInput.trim()} className="text-slate-400 hover:text-blue-600"><Plus size={14}/></button>
                                                 </div>
                                             </div>
                                             
@@ -357,7 +357,7 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                                         <button 
                                                             key={wi} 
                                                             onClick={() => appendDifficultWordFromList(word)}
-                                                            className="text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-1.5 py-0.5 rounded hover:bg-slate-700 hover:text-white transition-colors flex items-center"
+                                                            className="text-[10px] bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded hover:bg-slate-200 hover:text-slate-700 transition-colors flex items-center"
                                                         >
                                                             <Plus size={8} className="mr-1" />{word}
                                                         </button>
@@ -367,76 +367,76 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                         </div>
                                     </div>
 
-                                    <textarea className="w-full bg-slate-950 border border-slate-700 rounded p-3 text-white text-xs h-20 focus:border-blue-500 outline-none" value={tempEditValue.summary} onChange={(e) => setTempEditValue({...tempEditValue, summary: e.target.value})} placeholder="段落大意" />
+                                    <textarea className="w-full bg-white border border-slate-300 rounded p-3 text-slate-800 text-xs h-20 focus:ring-2 focus:ring-blue-500 outline-none" value={tempEditValue.summary} onChange={(e) => setTempEditValue({...tempEditValue, summary: e.target.value})} placeholder="段落大意" />
                                     
                                      {/* Rhetoric Array Editor */}
-                                        <div className="space-y-2 border-t border-slate-700/50 pt-3">
-                                            <label className="text-xs text-purple-400 font-bold uppercase flex items-center"><Wand2 size={12} className="mr-1"/> 修辭技巧 (Rhetoric)</label>
+                                        <div className="space-y-2 border-t border-slate-200 pt-3">
+                                            <label className="text-xs text-purple-600 font-bold uppercase flex items-center"><Wand2 size={12} className="mr-1"/> 修辭技巧 (Rhetoric)</label>
                                             {(tempEditValue.rhetorics || []).map((r: any, i: number) => (
-                                                <div key={i} className="flex gap-2 mb-1 items-center bg-slate-900/30 p-1 rounded">
-                                                    <input className="w-[30%] bg-slate-950 border border-slate-700 rounded p-1.5 text-white text-xs focus:border-purple-500 outline-none" value={r.name} onChange={(e) => {
+                                                <div key={i} className="flex gap-2 mb-1 items-center bg-white p-1 rounded border border-slate-200">
+                                                    <input className="w-[30%] bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-800 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.name} onChange={(e) => {
                                                         const newArr = [...tempEditValue.rhetorics]; newArr[i].name = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
                                                     }} placeholder="名稱 (例: 譬喻)" />
-                                                    <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1.5 text-slate-300 text-xs focus:border-purple-500 outline-none" value={r.example} onChange={(e) => {
+                                                    <input className="flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.example} onChange={(e) => {
                                                         const newArr = [...tempEditValue.rhetorics]; newArr[i].example = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
                                                     }} placeholder="原文例句" />
                                                     <button onClick={() => {
                                                         const newArr = [...tempEditValue.rhetorics]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, rhetorics: newArr});
-                                                    }} className="text-red-400 hover:text-red-300 p-1.5 hover:bg-red-900/20 rounded"><Trash2 size={14} /></button>
+                                                    }} className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
                                                 </div>
                                             ))}
                                             <button onClick={() => {
                                                 const newArr = [...(tempEditValue.rhetorics || []), { name: '', example: '' }];
                                                 setTempEditValue({...tempEditValue, rhetorics: newArr});
-                                            }} className="text-xs text-blue-400 flex items-center hover:text-white px-2 py-1 rounded hover:bg-slate-800 transition-colors w-fit"><Plus size={12} className="mr-1"/>新增修辭</button>
+                                            }} className="text-xs text-blue-500 flex items-center hover:text-blue-700 px-2 py-1 rounded hover:bg-slate-100 transition-colors w-fit"><Plus size={12} className="mr-1"/>新增修辭</button>
                                         </div>
 
                                         {/* Sentence Pattern Array Editor */}
-                                        <div className="space-y-2 border-t border-slate-700/50 pt-3">
-                                            <label className="text-xs text-amber-400 font-bold uppercase flex items-center"><Layers size={12} className="mr-1"/> 句型應用 (Sentence Patterns)</label>
+                                        <div className="space-y-2 border-t border-slate-200 pt-3">
+                                            <label className="text-xs text-amber-600 font-bold uppercase flex items-center"><Layers size={12} className="mr-1"/> 句型應用 (Sentence Patterns)</label>
                                             {(tempEditValue.sentencePatterns || []).map((p: any, i: number) => (
-                                                <div key={i} className="flex gap-2 mb-1 items-center bg-slate-900/30 p-1 rounded">
-                                                    <input className="w-[30%] bg-slate-950 border border-slate-700 rounded p-1.5 text-white text-xs focus:border-amber-500 outline-none" value={p.name} onChange={(e) => {
+                                                <div key={i} className="flex gap-2 mb-1 items-center bg-white p-1 rounded border border-slate-200">
+                                                    <input className="w-[30%] bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-800 text-xs focus:ring-2 focus:ring-amber-500 outline-none" value={p.name} onChange={(e) => {
                                                         const newArr = [...tempEditValue.sentencePatterns]; newArr[i].name = e.target.value; setTempEditValue({...tempEditValue, sentencePatterns: newArr});
                                                     }} placeholder="句型 (例: 不但...而且)" />
-                                                    <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1.5 text-slate-300 text-xs focus:border-amber-500 outline-none" value={p.example} onChange={(e) => {
+                                                    <input className="flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-amber-500 outline-none" value={p.example} onChange={(e) => {
                                                         const newArr = [...tempEditValue.sentencePatterns]; newArr[i].example = e.target.value; setTempEditValue({...tempEditValue, sentencePatterns: newArr});
                                                     }} placeholder="原文例句" />
                                                     <button onClick={() => {
                                                         const newArr = [...tempEditValue.sentencePatterns]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, sentencePatterns: newArr});
-                                                    }} className="text-red-400 hover:text-red-300 p-1.5 hover:bg-red-900/20 rounded"><Trash2 size={14} /></button>
+                                                    }} className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
                                                 </div>
                                             ))}
                                             <button onClick={() => {
                                                 const newArr = [...(tempEditValue.sentencePatterns || []), { name: '', example: '' }];
                                                 setTempEditValue({...tempEditValue, sentencePatterns: newArr});
-                                            }} className="text-xs text-blue-400 flex items-center hover:text-white px-2 py-1 rounded hover:bg-slate-800 transition-colors w-fit"><Plus size={12} className="mr-1"/>新增句型</button>
+                                            }} className="text-xs text-blue-500 flex items-center hover:text-blue-700 px-2 py-1 rounded hover:bg-slate-100 transition-colors w-fit"><Plus size={12} className="mr-1"/>新增句型</button>
                                         </div>
 
-                                    <textarea className="w-full bg-slate-950 border border-slate-700 rounded p-3 text-white text-xs h-16 focus:border-blue-500 outline-none" value={tempEditValue.deepDive} onChange={(e) => setTempEditValue({...tempEditValue, deepDive: e.target.value})} placeholder="深究提問" />
+                                    <textarea className="w-full bg-white border border-slate-300 rounded p-3 text-slate-800 text-xs h-16 focus:ring-2 focus:ring-blue-500 outline-none" value={tempEditValue.deepDive} onChange={(e) => setTempEditValue({...tempEditValue, deepDive: e.target.value})} placeholder="深究提問" />
 
-                                    <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-slate-700">
-                                        <button onClick={cancelEdit} className="px-4 py-2 text-slate-400 hover:text-white bg-slate-800 rounded-lg text-sm">取消</button>
-                                        <button onClick={saveEdit} className="px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm flex items-center shadow-lg"><Check size={16} className="mr-1"/> 儲存修改</button>
+                                    <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-slate-200">
+                                        <button onClick={cancelEdit} className="px-4 py-2 text-slate-500 hover:text-slate-700 bg-slate-100 rounded-lg text-sm">取消</button>
+                                        <button onClick={saveEdit} className="px-4 py-2 text-white bg-teal-600 hover:bg-teal-500 rounded-lg text-sm flex items-center shadow-md shadow-teal-200"><Check size={16} className="mr-1"/> 儲存修改</button>
                                     </div>
                                 </div>
                              ) : (
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1">
-                                        <h4 className="text-emerald-300 font-bold text-sm mb-1">{item.title}</h4>
+                                        <h4 className="text-emerald-700 font-bold text-sm mb-1">{item.title}</h4>
                                         
                                         {item.keywords && item.keywords.length > 0 && (
                                             <div className="flex flex-wrap gap-1 items-center mb-2">
-                                                <Brain size={10} className="text-emerald-500"/>
-                                                {item.keywords.map((kw, kwi) => <span key={kwi} className="text-[10px] bg-emerald-900/30 text-emerald-400 border border-emerald-900/50 px-2 py-0.5 rounded-full">{kw}</span>)}
+                                                <Brain size={10} className="text-emerald-600"/>
+                                                {item.keywords.map((kw, kwi) => <span key={kwi} className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">{kw}</span>)}
                                             </div>
                                         )}
 
-                                        <p className="text-xs text-slate-400 mb-2">{item.summary}</p>
+                                        <p className="text-xs text-slate-600 mb-2">{item.summary}</p>
                                         
                                         <div className="flex flex-wrap gap-2 mb-2">
                                             {item.difficultWords && item.difficultWords.length > 0 && item.difficultWords.map((w, wi) => (
-                                                <span key={wi} className="text-[10px] bg-blue-900/30 text-blue-300 border border-blue-900/50 px-2 py-0.5 rounded-full flex items-center"><Sparkles size={8} className="mr-1 opacity-50"/>{w}</span>
+                                                <span key={wi} className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full flex items-center"><Sparkles size={8} className="mr-1 opacity-50"/>{w}</span>
                                             ))}
                                         </div>
 
@@ -449,13 +449,13 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                                     <div key={i} className="text-xs group/rhetoric relative">
                                                         <div className="flex items-start justify-between">
                                                             <div>
-                                                                <span className="text-emerald-400 font-bold bg-emerald-950/50 px-1 rounded mr-2">修辭: {r.name}</span>
-                                                                <span className="text-slate-400 italic whitespace-pre-wrap">"{r.example}"</span>
+                                                                <span className="text-purple-700 font-bold bg-purple-50 px-1 rounded mr-2">修辭: {r.name}</span>
+                                                                <span className="text-slate-500 italic whitespace-pre-wrap">"{r.example}"</span>
                                                             </div>
                                                             <button 
                                                                 onClick={() => handleGenerateRhetoricGuidanceClick(idx, i)}
                                                                 disabled={isGeneratingThis || isEditingAny}
-                                                                className={`ml-2 p-1 rounded hover:bg-slate-800 transition-colors ${isGeneratingThis ? 'text-emerald-400' : 'text-slate-600 hover:text-emerald-400 opacity-0 group-hover/rhetoric:opacity-100'}`}
+                                                                className={`ml-2 p-1 rounded hover:bg-slate-100 transition-colors ${isGeneratingThis ? 'text-emerald-600' : 'text-slate-400 hover:text-emerald-600 opacity-0 group-hover/rhetoric:opacity-100'}`}
                                                                 title="AI 生成教學引導與微任務"
                                                             >
                                                                 {isGeneratingThis ? <RefreshCw size={12} className="animate-spin" /> : <Sparkles size={12} />}
@@ -470,77 +470,77 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                             <div className="flex flex-col gap-1 mt-2">
                                                 {item.sentencePatterns.map((p, i) => (
                                                     <div key={i} className="text-xs">
-                                                        <span className="text-amber-400 font-bold bg-amber-950/50 px-1 rounded mr-2">句型: {p.name}</span>
-                                                        <span className="text-slate-400 italic">"{p.example}"</span>
+                                                        <span className="text-amber-700 font-bold bg-amber-50 px-1 rounded mr-2">句型: {p.name}</span>
+                                                        <span className="text-slate-500 italic">"{p.example}"</span>
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
 
-                                        <div className="mt-3 text-xs text-blue-300 bg-blue-900/20 p-2 rounded border border-blue-900/30"><span className="font-bold opacity-70">深究: </span>{item.deepDive}</div>
+                                        <div className="mt-3 text-xs text-blue-700 bg-blue-50 p-2 rounded border border-blue-100"><span className="font-bold opacity-70">深究: </span>{item.deepDive}</div>
                                     </div>
                                     <div className={`flex gap-2 ml-4 transition-opacity ${isEditingAny ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover:opacity-100'}`}>
-                                        <button onClick={() => startEdit('segment', idx, item)} className="text-blue-400 hover:text-blue-300 p-1.5 hover:bg-slate-800 rounded"><Edit2 size={16} /></button>
-                                        <button onClick={() => deleteItem('segments', idx)} className="text-red-400 hover:text-red-300 p-1.5 hover:bg-slate-800 rounded"><Trash2 size={16} /></button>
+                                        <button onClick={() => startEdit('segment', idx, item)} className="text-blue-500 hover:text-blue-700 p-1.5 hover:bg-slate-100 rounded"><Edit2 size={16} /></button>
+                                        <button onClick={() => deleteItem('segments', idx)} className="text-red-400 hover:text-red-600 p-1.5 hover:bg-slate-100 rounded"><Trash2 size={16} /></button>
                                     </div>
                                 </div>
                              )}
                         </div>
                     ))}
                 </div>
-                 <div className="p-2 bg-slate-900 border-t border-slate-800 flex justify-center">
-                    <button onClick={addNewSegmentItem} disabled={isEditingAny} className={`flex items-center gap-2 text-xs py-1 px-4 rounded transition-colors w-full justify-center ${isEditingAny ? 'text-slate-600 cursor-not-allowed' : 'text-slate-400 hover:text-emerald-400 hover:bg-slate-800'}`}>
+                 <div className="p-2 bg-slate-50 border-t border-slate-200 flex justify-center">
+                    <button onClick={addNewSegmentItem} disabled={isEditingAny} className={`flex items-center gap-2 text-xs py-1 px-4 rounded transition-colors w-full justify-center ${isEditingAny ? 'text-slate-400 cursor-not-allowed' : 'text-slate-500 hover:text-teal-600 hover:bg-slate-100'}`}>
                         <Plus size={14} /> 新增段落
                     </button>
                 </div>
             </div>
 
             {/* 2. Strategies Section */}
-             <div className="bg-slate-900/50 border border-slate-800 rounded-xl overflow-hidden relative">
-                <div className="bg-slate-800/80 px-4 py-2 border-b border-slate-700 flex justify-between items-center">
+             <div className="bg-white border border-slate-200 rounded-xl overflow-hidden relative shadow-sm">
+                <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-slate-200 text-sm">語文百寶箱 (Strategies)</h3>
+                        <h3 className="font-bold text-slate-700 text-sm">語文百寶箱 (Strategies)</h3>
                         <span className="text-xs text-slate-500">{data.strategies.length} 策略</span>
                     </div>
-                    <button onClick={handleRegenerateStrategiesClick} disabled={isGeneratingAnyStrategy || isEditingAny} className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-full transition-all border ${isRegeneratingStrategies ? 'bg-slate-800 text-slate-600' : 'bg-blue-900/20 text-blue-400 border-blue-900/50'}`}>
+                    <button onClick={handleRegenerateStrategiesClick} disabled={isGeneratingAnyStrategy || isEditingAny} className={`text-xs flex items-center gap-1 px-3 py-1.5 rounded-full transition-all border ${isRegeneratingStrategies ? 'bg-slate-100 text-slate-400' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
                         <RefreshCw size={12} className={isRegeneratingStrategies ? "animate-spin" : ""} /> 重新發想
                     </button>
                 </div>
-                <div className="divide-y divide-slate-800 grid grid-cols-1 md:grid-cols-2 gap-px bg-slate-800">
+                <div className="divide-y divide-slate-100 grid grid-cols-1 md:grid-cols-2 gap-px bg-slate-100">
                     {data.strategies.map((item, idx) => {
                         const isRhetoric = item.type === 'Rhetoric';
                         const isThinking = item.type === 'Thinking';
-                        const borderColor = isRhetoric ? 'border-purple-500/30' : isThinking ? 'border-sky-500/30' : 'border-amber-500/30';
-                        const headerColor = isRhetoric ? 'text-purple-300' : isThinking ? 'text-sky-300' : 'text-amber-300';
-                        const badgeColor = isRhetoric ? 'bg-purple-900/50 text-purple-200' : isThinking ? 'bg-sky-900/50 text-sky-200' : 'bg-amber-900/50 text-amber-200';
+                        const borderColor = isRhetoric ? 'border-purple-200' : isThinking ? 'border-sky-200' : 'border-amber-200';
+                        const headerColor = isRhetoric ? 'text-purple-700' : isThinking ? 'text-sky-700' : 'text-amber-700';
+                        const badgeColor = isRhetoric ? 'bg-purple-100 text-purple-700' : isThinking ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700';
 
                         // Specific loading state for this card
                         const isRefreshingThis = generatingType === `refresh-${idx}`;
 
                         return (
-                        <div key={idx} className={`p-4 bg-slate-950 hover:bg-slate-900/50 transition-colors group relative border ${borderColor} m-2 rounded-xl`}>
+                        <div key={idx} className={`p-4 bg-white hover:bg-slate-50 transition-colors group relative border ${borderColor} m-2 rounded-xl shadow-sm`}>
                              {/* Specific Item Loading Overlay */}
                              {isRefreshingThis && (
-                                <div className="absolute inset-0 bg-slate-900/80 z-10 flex items-center justify-center rounded-xl">
-                                    <RefreshCw className="text-emerald-400 animate-spin mr-2" size={16} />
-                                    <span className="text-xs text-emerald-300">更新中...</span>
+                                <div className="absolute inset-0 bg-white/80 z-10 flex items-center justify-center rounded-xl backdrop-blur-sm">
+                                    <RefreshCw className="text-teal-500 animate-spin mr-2" size={16} />
+                                    <span className="text-xs text-teal-600">更新中...</span>
                                 </div>
                              )}
 
                              {editingSection === 'strategy' && editingIndex === idx ? (
                                 <div className="flex flex-col gap-3">
                                     <div className="flex gap-2">
-                                        <select className="bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-sm w-1/3" value={tempEditValue.type || 'Rhetoric'} onChange={(e) => setTempEditValue({...tempEditValue, type: e.target.value})}>
+                                        <select className="bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-800 text-sm w-1/3" value={tempEditValue.type || 'Rhetoric'} onChange={(e) => setTempEditValue({...tempEditValue, type: e.target.value})}>
                                             <option value="Rhetoric">🔮 修辭</option><option value="Thinking">🧠 思考</option><option value="Task">⚡ 任務</option>
                                         </select>
-                                        <input className="bg-slate-900 border border-slate-700 rounded p-1.5 text-white text-sm font-bold flex-1" value={tempEditValue.title} onChange={(e) => setTempEditValue({...tempEditValue, title: e.target.value})} />
+                                        <input className="bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-800 text-sm font-bold flex-1" value={tempEditValue.title} onChange={(e) => setTempEditValue({...tempEditValue, title: e.target.value})} />
                                     </div>
-                                    <textarea className="bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs w-full h-16" value={tempEditValue.method || ''} onChange={(e) => setTempEditValue({...tempEditValue, method: e.target.value})} placeholder="方法論 (Method)" />
-                                    <textarea className="bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs w-full h-16" value={tempEditValue.teachingPoint} onChange={(e) => setTempEditValue({...tempEditValue, teachingPoint: e.target.value})} placeholder="教學引導 (Insight)" />
-                                    <textarea className="bg-slate-900 border border-slate-700 rounded p-2 text-white text-xs w-full h-16" value={tempEditValue.application} onChange={(e) => setTempEditValue({...tempEditValue, application: e.target.value})} placeholder="微任務 (Interaction)" />
+                                    <textarea className="bg-slate-50 border border-slate-300 rounded p-2 text-slate-800 text-xs w-full h-16" value={tempEditValue.method || ''} onChange={(e) => setTempEditValue({...tempEditValue, method: e.target.value})} placeholder="方法論 (Method)" />
+                                    <textarea className="bg-slate-50 border border-slate-300 rounded p-2 text-slate-800 text-xs w-full h-16" value={tempEditValue.teachingPoint} onChange={(e) => setTempEditValue({...tempEditValue, teachingPoint: e.target.value})} placeholder="教學引導 (Insight)" />
+                                    <textarea className="bg-slate-50 border border-slate-300 rounded p-2 text-slate-800 text-xs w-full h-16" value={tempEditValue.application} onChange={(e) => setTempEditValue({...tempEditValue, application: e.target.value})} placeholder="微任務 (Interaction)" />
                                     <div className="flex justify-end gap-2 mt-1">
-                                        <button onClick={cancelEdit} className="p-1 text-slate-400 hover:text-white"><X size={18} /></button>
-                                        <button onClick={saveEdit} className="p-1 text-emerald-400 hover:text-emerald-300"><Check size={18} /></button>
+                                        <button onClick={cancelEdit} className="p-1 text-slate-400 hover:text-slate-600"><X size={18} /></button>
+                                        <button onClick={saveEdit} className="p-1 text-teal-600 hover:text-teal-700"><Check size={18} /></button>
                                     </div>
                                 </div>
                             ) : (
@@ -556,13 +556,13 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                          <div className={`flex gap-1 transition-opacity ${isEditingAny ? 'opacity-0 pointer-events-none' : 'opacity-0 group-hover:opacity-100'}`}>
                                             <button 
                                                 onClick={() => handleRefreshSpecificStrategy(idx)} 
-                                                className="text-emerald-400 hover:text-emerald-300 p-1"
+                                                className="text-teal-500 hover:text-teal-700 p-1"
                                                 disabled={isGeneratingAnyStrategy}
                                             >
                                                 <RefreshCw size={14} className={isRefreshingThis ? "animate-spin" : ""} />
                                             </button>
-                                            <button onClick={() => startEdit('strategy', idx, item)} className="text-blue-400 hover:text-blue-300 p-1"><Edit2 size={14} /></button>
-                                            <button onClick={() => deleteItem('strategies', idx)} className="text-red-400 hover:text-red-300 p-1"><Trash2 size={14} /></button>
+                                            <button onClick={() => startEdit('strategy', idx, item)} className="text-blue-500 hover:text-blue-700 p-1"><Edit2 size={14} /></button>
+                                            <button onClick={() => deleteItem('strategies', idx)} className="text-red-400 hover:text-red-600 p-1"><Trash2 size={14} /></button>
                                         </div>
                                     </div>
 
@@ -570,17 +570,17 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                     <div className="space-y-3 flex-1 text-xs">
                                         {item.method && (
                                             <div>
-                                                <div className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">方法論 (Method)</div>
-                                                <div className="text-slate-300">{item.method}</div>
+                                                <div className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">方法論 (Method)</div>
+                                                <div className="text-slate-600">{item.method}</div>
                                             </div>
                                         )}
                                         <div>
-                                            <div className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">教學引導 (Insight)</div>
-                                            <div className="text-slate-300">{item.teachingPoint}</div>
+                                            <div className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">教學引導 (Insight)</div>
+                                            <div className="text-slate-600">{item.teachingPoint}</div>
                                         </div>
-                                         <div className="bg-slate-900/50 p-2 rounded border border-slate-800">
-                                            <div className="text-[10px] text-slate-500 font-bold uppercase mb-0.5">1分鐘微任務 (Interaction)</div>
-                                            <div className="text-slate-300">{item.application}</div>
+                                         <div className="bg-slate-50 p-2 rounded border border-slate-200">
+                                            <div className="text-[10px] text-slate-400 font-bold uppercase mb-0.5">1分鐘微任務 (Interaction)</div>
+                                            <div className="text-slate-600">{item.application}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -588,13 +588,13 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                         </div>
                     );})}
                 </div>
-                 <div className="p-2 bg-slate-900 border-t border-slate-800 flex flex-col gap-2 justify-center items-center">
-                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">✨ AI 新增策略 (請選擇類型)</span>
+                 <div className="p-2 bg-slate-50 border-t border-slate-200 flex flex-col gap-2 justify-center items-center">
+                    <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">✨ AI 新增策略 (請選擇類型)</span>
                     <div className="flex gap-2 w-full justify-center">
                         <button 
                             onClick={() => handleGenerateSingleStrategyClick('Rhetoric')} 
                             disabled={isGeneratingAnyStrategy || isEditingAny}
-                            className={`flex-1 max-w-[120px] flex items-center justify-center gap-1 text-xs py-1.5 px-2 rounded border border-purple-900/50 bg-purple-900/10 text-purple-400 hover:bg-purple-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                            className={`flex-1 max-w-[120px] flex items-center justify-center gap-1 text-xs py-1.5 px-2 rounded border border-purple-200 bg-purple-50 text-purple-600 hover:bg-purple-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
                             {generatingType === 'Rhetoric' ? <RefreshCw size={12} className="animate-spin" /> : <Wand2 size={12} />}
                             修辭
@@ -602,7 +602,7 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                         <button 
                             onClick={() => handleGenerateSingleStrategyClick('Thinking')} 
                             disabled={isGeneratingAnyStrategy || isEditingAny}
-                            className={`flex-1 max-w-[120px] flex items-center justify-center gap-1 text-xs py-1.5 px-2 rounded border border-blue-900/50 bg-blue-900/10 text-blue-400 hover:bg-blue-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                            className={`flex-1 max-w-[120px] flex items-center justify-center gap-1 text-xs py-1.5 px-2 rounded border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
                             {generatingType === 'Thinking' ? <RefreshCw size={12} className="animate-spin" /> : <Brain size={12} />}
                             思考
@@ -610,7 +610,7 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                         <button 
                             onClick={() => handleGenerateSingleStrategyClick('Task')} 
                             disabled={isGeneratingAnyStrategy || isEditingAny}
-                            className={`flex-1 max-w-[120px] flex items-center justify-center gap-1 text-xs py-1.5 px-2 rounded border border-amber-900/50 bg-amber-900/10 text-amber-400 hover:bg-amber-900/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
+                            className={`flex-1 max-w-[120px] flex items-center justify-center gap-1 text-xs py-1.5 px-2 rounded border border-amber-200 bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
                         >
                             {generatingType === 'Task' ? <RefreshCw size={12} className="animate-spin" /> : <Zap size={12} />}
                             任務
@@ -623,11 +623,11 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
        </div>
 
         {/* Confirm Footer */}
-       <div className="absolute bottom-0 left-0 right-0 p-4 bg-slate-950/90 backdrop-blur-md border-t border-slate-800 flex justify-center gap-4 z-10 shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.5)]">
+       <div className="absolute bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-200 flex justify-center gap-4 z-10 shadow-[0_-4px_20px_-5px_rgba(0,0,0,0.1)]">
              <button
                 onClick={onBack}
                 disabled={isLoading}
-                className="px-6 py-3 text-slate-300 font-bold rounded-xl border border-slate-700 hover:bg-slate-800 transition-all flex items-center justify-center disabled:opacity-50"
+                className="px-6 py-3 text-slate-600 font-bold rounded-xl border border-slate-200 hover:bg-slate-50 transition-all flex items-center justify-center disabled:opacity-50"
              >
                 <ArrowLeft className="mr-2" size={20} />
                 返回上一步
@@ -637,8 +637,8 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                 disabled={isEditingAny || isLoading}
                 className={`flex-1 max-w-xl py-3 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center ${
                     isEditingAny || isLoading
-                    ? 'bg-slate-700 text-slate-400 cursor-not-allowed' 
-                    : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-900/50'
+                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed' 
+                    : 'bg-teal-600 hover:bg-teal-500 shadow-teal-200'
                 }`}
              >
                 {isLoading ? (

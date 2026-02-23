@@ -125,6 +125,7 @@ function App() {
                   onGenerateMnemonic={handleGenerateMnemonic}
                   onGeneratePolyphonic={handleGeneratePolyphonic}
                   onGenerateShapeSimilar={handleGenerateShapeSimilar}
+                  onGenerateShapeSimilarDetails={handleGenerateShapeSimilarDetails}
                   onBack={handleBack}
                 />
              )}
