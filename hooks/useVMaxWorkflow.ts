@@ -243,8 +243,44 @@ The user's session was interrupted. Here is the FULL CONTEXT of the project so f
   const handleStep4Confirm = async (traits: string, guide: GuideCandidate) => {
     setState(prev => ({ ...prev, isLoading: true, error: null, confirmedProtagonistTraits: traits, selectedGuide: guide }));
     try {
-      const response = await sendMessageToGemini(`${getRecoveryContext()}\n${STEP_4_GENERATION_PROMPT_PREFIX}${state.selectedStyle?.name}\nGuide: ${guide.name}\nProtagonist Traits: ${traits}\n${STEP_4_GENERATION_PROMPT_SUFFIX}`);
-      setState(prev => ({ ...prev, isLoading: false, outputScript: response, finalOutput: response, currentStep: AppStep.STEP_6_OUTPUT }));
+      // 1. 取得使用者選定的風格與角色資訊
+      const { selectedStyle, castingData } = state;
+
+      // 2. 🛡️ 建構包含所有最新欄位的絕對真理上下文
+      const confirmedContext = {
+        vocabularyRadiation: state.deepVocabResult,   // 內含形近字口訣 mnemonic
+        segmentsAnalysis: state.deepSegmentsResult,   // 內含修辭分析與 readingQuestions
+        visualIdentity: {
+          style: selectedStyle,
+          guide: guide,
+          protagonist: castingData?.protagonist,
+          fusionTable: castingData?.fusionTable // 內含童詩的 Markdown 表格結構
+        }
+      };
+
+      // 3. 組合最終 Prompt
+      const finalPrompt = `
+        ${STEP_4_GENERATION_PROMPT_PREFIX}
+        Style: ${selectedStyle?.name} (${selectedStyle?.code})
+        Guide: ${guide.name} (Tone: ${guide.tone})
+        
+        [CONFIRMED DATA CONTEXT]
+        ${JSON.stringify(confirmedContext, null, 2)}
+        
+        ${STEP_4_GENERATION_PROMPT_SUFFIX}
+      `;
+
+      // 4. 呼叫 Gemini 執行核心產出
+      const response = await sendMessageToGemini(finalPrompt);
+      
+      // 5. 更新狀態進入 STEP_6_OUTPUT
+      setState(prev => ({ 
+        ...prev, 
+        isLoading: false, 
+        outputScript: response, 
+        finalOutput: response, 
+        currentStep: AppStep.STEP_6_OUTPUT 
+      }));
     } catch (e) { handleError(e); }
   };
 

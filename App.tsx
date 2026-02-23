@@ -30,6 +30,7 @@ function App() {
     handleGenerateMnemonic,
     handleGeneratePolyphonic,
     handleGenerateShapeSimilar,
+    handleGenerateShapeSimilarDetails,
     handleGenerateRhetoricGuidance,
     handleStep3Confirm,
     handleStep4Confirm,

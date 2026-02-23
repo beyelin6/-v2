@@ -225,10 +225,10 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
                          </button>
                      </div>
                     {(tempEditValue.shapeSimilar || []).map((item: any, i: number) => (
-                        <div key={i} className="flex gap-1 items-center">
-                            <div className="relative">
+                        <div key={i} className="flex flex-col gap-2 p-2 bg-slate-900/30 rounded border border-slate-800 mb-2">
+                            <div className="flex gap-1 items-center">
                                 <input 
-                                    className="w-12 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white pr-4" 
+                                    className="w-12 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" 
                                     value={item.char} 
                                     onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].char = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} 
                                     placeholder="字" 
@@ -236,16 +236,24 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
                                 <button 
                                     onClick={() => handleGenShapeSimilarDetails(i, item.char)}
                                     disabled={isGeneratingShapeSimilarDetails === i || !item.char}
-                                    className="absolute -right-5 top-1.5 text-emerald-400 hover:text-emerald-300 disabled:opacity-30 transition-colors z-10"
-                                    title="AI 自動生成部首與造詞"
+                                    className={`text-[10px] px-1.5 py-1 rounded border flex items-center gap-1 whitespace-nowrap transition-colors ${
+                                        isGeneratingShapeSimilarDetails === i || !item.char
+                                        ? 'bg-slate-800 text-slate-600 border-slate-800 cursor-not-allowed'
+                                        : 'bg-emerald-900/30 text-emerald-400 border-emerald-900 hover:bg-emerald-900/50'
+                                    }`}
+                                    title="AI 自動生成部首、造詞與解釋"
                                 >
-                                    {isGeneratingShapeSimilarDetails === i ? <RefreshCw size={12} className="animate-spin" /> : <Wand2 size={12} />}
+                                    {isGeneratingShapeSimilarDetails === i ? <RefreshCw size={10} className="animate-spin" /> : <Wand2 size={10} />}
+                                    AI 詳解
                                 </button>
+                                <input className="w-16 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.radical} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].radical = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="部首" />
+                                <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.words} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].words = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="造詞" />
+                                <button onClick={() => { const newArr = [...tempEditValue.shapeSimilar]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} className="text-slate-600 hover:text-red-400 p-1"><Trash2 size={12} /></button>
                             </div>
-                             <input className="w-16 ml-6 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.radical} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].radical = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="部首" />
-                             <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-white" value={item.words} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].words = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="造詞" />
-                             <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-slate-400" value={item.explanation} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].explanation = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="解釋部首差異" />
-                             <button onClick={() => { const newArr = [...tempEditValue.shapeSimilar]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} className="text-slate-600 hover:text-red-400 p-1"><Trash2 size={12} /></button>
+                            <div className="flex gap-1">
+                                <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-slate-400" value={item.explanation} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].explanation = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="解釋部首差異" />
+                                <input className="flex-1 bg-slate-950 border border-slate-700 rounded p-1 text-xs text-amber-400/80 placeholder-amber-700/50" value={item.mnemonic || ''} onChange={(e) => { const newArr = [...tempEditValue.shapeSimilar]; newArr[i].mnemonic = e.target.value; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} placeholder="辨析口訣 (e.g. 有言來爭辯)" />
+                            </div>
                         </div>
                     ))}
                     <button onClick={() => { const newArr = [...(tempEditValue.shapeSimilar || []), { char: '', radical: '', words: '', explanation: '' }]; setTempEditValue({...tempEditValue, shapeSimilar: newArr}); }} className="text-xs text-blue-400 flex items-center"><Plus size={10} className="mr-1"/>新增辨析</button>
@@ -358,16 +366,35 @@ const Step2Deep: React.FC<Step2DeepProps> = ({
                                             </span>
                                         </div>
                                         {/* Display Logic */}
-                                        {item.type === '形近字' && item.shapeSimilar && (
-                                            <div className="text-sm text-slate-300 space-y-2 pl-2 border-l-2 border-slate-700">
-                                                {item.shapeSimilar.map((sim, i) => (
-                                                    <div key={i} className="grid grid-cols-[auto_1fr] gap-2">
-                                                        <div className="font-bold text-slate-200">{sim.char} <span className="text-slate-500 font-normal text-xs">({sim.radical})</span></div>
-                                                        <div><span className="text-emerald-300">{sim.words}</span>{sim.explanation && <span className="text-slate-500 text-xs ml-2">({sim.explanation})</span>}</div>
+                                        {item.type === '形近字' && item.shapeSimilar && item.shapeSimilar.length > 0 && (
+                                          <div className="mt-3 border-t border-slate-100 pt-3">
+                                            <h5 className="text-xs font-bold text-slate-500 mb-2 flex items-center gap-1">
+                                              <span className="text-amber-500">⚡</span> 形近字辨析
+                                            </h5>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                              {item.shapeSimilar.map((sim, idx) => (
+                                                <div key={idx} className="bg-amber-50/30 border border-amber-100 p-3 rounded-lg">
+                                                  <div className="flex items-center justify-between mb-1">
+                                                    <span className="text-lg font-bold text-slate-800">{sim.char}</span>
+                                                    <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded">
+                                                      {sim.radical}
+                                                    </span>
+                                                  </div>
+                                                  <p className="text-xs text-slate-600 mb-2">{sim.explanation}</p>
+                                                  
+                                                  {/* ✨ 新增：辨析口訣渲染區塊 */}
+                                                  {sim.mnemonic && (
+                                                    <div className="mt-2 bg-white p-2 rounded border border-amber-200 shadow-sm">
+                                                      <span className="text-[10px] font-bold text-amber-500 block mb-0.5">💡 記憶口訣</span>
+                                                      <span className="text-xs font-medium text-amber-900 italic">
+                                                        「{sim.mnemonic}」
+                                                      </span>
                                                     </div>
-                                                ))}
-                                                {item.mnemonic && <div className="mt-2 text-xs text-blue-300 bg-blue-900/10 p-1.5 rounded inline-block"><span className="font-bold mr-1">💡 辨析筆記:</span> {item.mnemonic}</div>}
+                                                  )}
+                                                </div>
+                                              ))}
                                             </div>
+                                          </div>
                                         )}
                                          {item.type === '多音字' && item.polyphonic && (
                                             <div className="text-sm text-slate-300 space-y-1 pl-2 border-l-2 border-indigo-900">

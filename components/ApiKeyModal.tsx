@@ -114,12 +114,7 @@ const ApiKeyModal: React.FC<ApiKeyModalProps> = ({ onConfirm, onClose, hasExisti
             </div>
             <div className="text-xs text-slate-600 leading-relaxed">
               還沒有金鑰嗎？請前往{' '}
-              <a 
-                href="https://aistudio.google.com/app/apikey" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-teal-600 font-medium hover:text-teal-700 underline underline-offset-2"
-              >
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-teal-600 font-medium hover:text-teal-700 underline underline-offset-2">
                 Google AI Studio
               </a>
               {' '}免費建立一組。您的金鑰僅會儲存在本地瀏覽器，不會回傳至任何第三方伺服器。

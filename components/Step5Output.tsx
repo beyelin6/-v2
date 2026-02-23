@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Layers, FileText, CheckSquare, Database, Download, RefreshCw, Sparkles, ArrowLeft, GripVertical, Settings2, Terminal, Gamepad2 } from 'lucide-react';
+import { Layers, FileText, CheckSquare, Database, Download, RefreshCw, Sparkles, ArrowLeft, GripVertical, Settings2, Terminal, Gamepad2, Copy, Check, AlertCircle, Headphones } from 'lucide-react';
 import {
   DndContext,
   closestCenter,
@@ -40,6 +40,104 @@ const MODULE_CONFIG: Record<ModuleType, { label: string; icon: React.ElementType
   kb: { label: '知識庫 (Knowledge Base)', shortLabel: '知識庫', icon: Database },
   notebooklm_guide: { label: 'NotebookLM 操作指南', shortLabel: '操作指南', icon: Terminal },
   gamified_quiz: { label: '遊戲化測驗 (Gamified Quiz)', shortLabel: '遊戲化測驗', icon: Gamepad2 },
+};
+
+// --- ✨ 1. 微型元件：獨立管理複製狀態的指令區塊 ---
+const CommandBlock = ({ subtitle, command }: { subtitle: string, command: string }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('複製失敗:', err);
+    }
+  };
+
+  return (
+    <div className="mt-4 first:mt-2">
+      <div className="flex justify-between items-center mb-2">
+        <h4 className="text-sm font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded-md">{subtitle}</h4>
+        <button
+          onClick={handleCopy}
+          className={`flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+            isCopied 
+              ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+              : 'bg-white text-slate-600 border border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200'
+          }`}
+        >
+          {isCopied ? <Check size={14} /> : <Copy size={14} />}
+          {isCopied ? '已複製！' : '複製此指令'}
+        </button>
+      </div>
+      <div className="relative">
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-400 rounded-l-md"></div>
+        <pre className="bg-slate-800 text-slate-50 p-4 rounded-md text-xs font-mono whitespace-pre-wrap leading-relaxed pl-5">
+          <code>{command}</code>
+        </pre>
+      </div>
+    </div>
+  );
+};
+
+// --- ✨ 2. 原有的單一複製卡片 (適用於全局與語音) ---
+interface CopyableInstructionProps {
+  title: string;
+  icon: React.ReactNode;
+  description: string;
+  command: string;
+}
+
+const CopyableInstruction: React.FC<CopyableInstructionProps> = ({ title, icon, description, command }) => {
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setIsCopied(true);
+      // 2秒後恢復原狀
+      setTimeout(() => setIsCopied(false), 2000);
+    } catch (err) {
+      console.error('複製失敗:', err);
+    }
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden transition-all hover:border-indigo-300 hover:shadow-md mb-6">
+      <div className="bg-slate-50 px-5 py-3 border-b border-slate-100 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="text-indigo-600">{icon}</div>
+          <h3 className="font-bold text-slate-800">{title}</h3>
+        </div>
+        
+        {/* ✨ 核心：一鍵複製按鈕 */}
+        <button
+          onClick={handleCopy}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+            isCopied 
+              ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' 
+              : 'bg-white text-slate-600 border border-slate-200 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200'
+          }`}
+        >
+          {isCopied ? <Check size={16} /> : <Copy size={16} />}
+          {isCopied ? '已複製！' : '一鍵複製'}
+        </button>
+      </div>
+      
+      <div className="p-5">
+        <p className="text-sm text-slate-500 mb-3">{description}</p>
+        {/* 指令展示區塊 */}
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500 rounded-l-md"></div>
+          <pre className="bg-slate-800 text-slate-50 p-4 rounded-md text-sm font-mono whitespace-pre-wrap overflow-x-auto leading-relaxed pl-6">
+            <code>{command}</code>
+          </pre>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 // Sortable Item Component
@@ -166,6 +264,74 @@ const Step5Output: React.FC<Step5OutputProps> = ({
     URL.revokeObjectURL(url);
   };
 
+  const renderNotebookLMGuide = () => {
+    // 組合動態變數
+    // 這裡為了簡化，暫時使用預設值，實際應從 props 傳入 selectedGuide 和 basicInfo
+    const guideName = "引導導師"; 
+    const toneDesc = "專業語氣";
+    const grade = "國小";
+    const topic = "本課主題";
+
+    return (
+      <div className="max-w-4xl mx-auto py-6">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center justify-center gap-2 mb-2">
+            <Terminal className="w-8 h-8 text-indigo-600" />
+            NotebookLM 萬能操作指南
+          </h2>
+          <p className="text-slate-500 text-sm">請將生成的 TXT 腳本上傳至 NotebookLM 後，搭配以下指令進行精準控制。</p>
+        </div>
+
+        <CopyableInstruction 
+          title="1. 全局生成防護鎖 (Global Lock)"
+          icon={<Terminal size={20} />}
+          description="貼入「簡報」按鈕旁邊的 ✏️ 自訂指令框。這能防止 AI 擅自修改文字或畫風。"
+          command={`請扮演一位嚴格的『視覺執行導演』。請依照來源文件中的 \`notebooklm_driver\` 設定，以及 \`Instruction 2: 原子化動態腳本\` 的結構，為我生成從 [P1] 到最後一頁的詳細投影片內容。
+
+⚠️ 最高指導原則 (Critical Protocols)：
+1. 視覺絕對忠誠 (Visual Fidelity)：請嚴格遵守【視覺提示詞】中的描述。禁止歷史覆寫：即使成語典故與特定物品有關，若指令要求畫『發光的古物』，你必須畫『發光的古物』。請勿使用背景知識來替換視覺物件。
+2. 文字逐字鎖定 (Text Verbatim)：投影片上的文字內容，必須 100% 逐字複製【顯示文字】區塊（被 --- 包夾的區域）內的繁體中文。禁止潤飾：請勿修改標題、縮減例句或優化語意，嚴禁增加英文。
+3. 風格與特徵一致性：請嚴格遵守 YAML 設定檔中的 dna_traits (角色特徵) 與 style_prompt (視覺風格咒語)。確保每一頁的人物長相與畫風完全一致。`}
+        />
+
+        {/* 🌟 2. 複合式卡片：單頁精準修復指令 */}
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6">
+          <div className="bg-slate-50 px-5 py-3 border-b border-slate-100 flex items-center gap-2">
+            <div className="text-amber-500"><AlertCircle size={20} /></div>
+            <h3 className="font-bold text-slate-800">2. 單頁精準修復指令</h3>
+          </div>
+          <div className="p-5">
+            <p className="text-sm text-slate-500 mb-4">若產出後單頁發生錯誤，請點擊該頁右上角的 ✏️，並根據錯誤類型複製對應指令：</p>
+            
+            <CommandBlock 
+              subtitle="情況 A：圖片跑版、角色長相變了" 
+              command="請維持這頁的文字完全不變。請嚴格去來源文件尋找這一頁對應的【視覺提示詞】，並將圖片強制修正為原本設定的 dna_traits 與 style_prompt，不准擅自改變角色的服裝、髮型或場景畫風。" 
+            />
+            
+            <div className="h-px bg-slate-100 my-4 w-full"></div> {/* 分隔線 */}
+
+            <CommandBlock 
+              subtitle="情況 B：文字漏印、沒有照腳本顯示" 
+              command="這頁的文字有遺漏或被擅自改寫了。請維持這頁的圖片不變，嚴格去來源文件尋找這一頁對應的【顯示文字】區塊（被 --- 包夾的區域）。請將該區塊內的繁體中文 100% 逐字補回畫面上，禁止縮減例句或省略段落大意。" 
+            />
+          </div>
+        </div>
+
+        <CopyableInstruction 
+          title="3. 語音摘要設定指令 (Audio Overview)"
+          icon={<Headphones size={20} />}
+          description="生成生動的雙人對講 Podcast 預習音檔。"
+          command={`啟動教學模式對話：
+- 主講人：${guideName}（角色：引導導師）。
+- 語氣設定：${toneDesc}。
+- 目標對象：${grade} 學生。
+- 核心內容：根據來源文件的【引導語/腳本】，針對『${topic}』進行深度對話與拆解。
+- 互動要求：對話中必須包含對修辭技巧、生字部首的具體解釋，並使用『孩子們』、『準備好了嗎』作為課堂互動用語。`}
+        />
+      </div>
+    );
+  };
+
   const renderContent = () => {
       let content = "";
       let isEmpty = false;
@@ -196,11 +362,14 @@ const Step5Output: React.FC<Step5OutputProps> = ({
               emptyMessage = "尚未生成 NotebookLM 知識庫 (Instruction 5)";
               break;
           case 'notebooklm_guide':
-              content = outputNotebookLMGuide;
-              isEmpty = !content;
-              generateType = 'notebooklm_guide';
-              emptyMessage = "尚未生成 NotebookLM 操作指南 (Instruction 6)";
-              break;
+              // content = outputNotebookLMGuide; // Not used for custom UI
+              // isEmpty = !content; // Always show the guide UI even if not generated via API yet (or maybe we want to generate it first?)
+              // Actually, the request implies we render the UI directly. 
+              // Let's assume we want to show the UI we built.
+              // If we want to support "generating" it first via LLM to get specific values, we can keep the empty check.
+              // But the user request says "render NotebookLM Guide section... using CopyableInstruction".
+              // Let's show the UI directly.
+              return renderNotebookLMGuide();
           case 'gamified_quiz':
               content = outputGamifiedQuiz;
               isEmpty = !content;

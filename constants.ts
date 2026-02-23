@@ -9,7 +9,7 @@ export const SYSTEM_PROMPT = `
 
 V-MAX System Master Kernel v59.3 (The DNA & Purity Kernel / Full Detailed)
 Compatibility: V-MAX v59.3 Prompt Engine
-Last Update: 2026-02-22
+Last Update: 2026-02-23
 ⚠️ This document is the Single Source of Truth. DO NOT SUMMARIZE.
 
 🛡️ 0️⃣ System Core Protocol (最高指導原則)
@@ -122,7 +122,7 @@ Schema:
 {
   "mode": "Mode A (Drama) or Mode B (Guide)",
   "basicInfo": {
-    "genre": "Text Genre (必須使用中文, 例如: 記敘文, 說明文)",
+    "genre": "Text Genre (必須使用中文, 例如: 記敘文, 童詩, 說明文)",
     "grade": "Estimated Grade (必須使用中文, 例如: 國小三年級)",
     "theme": "Core Theme (必須使用中文)",
     "writingTechnique": "Writing Technique (必須使用中文, 例如: 順敘法, 倒敘法, 夾敘夾議)"
@@ -181,7 +181,7 @@ Schema:
            "explanation": "中間是刀，表示用刀分開..." 
          }
       ],
-      "mnemonic": "辨別要用刀，辯論要用口 (Note for student)"
+      "mnemonic": "辨別要用刀，辯論要用言 (12字以內辨析口訣)"
     },
     {
       "word": "Target Word (Polyphonic)",
@@ -233,14 +233,23 @@ Schema:
   "segments": [
     {
       "title": "Logical Segment Title",
-      "summary": "Main Idea summary",
+      "summary": "Main Idea summary (約 50 字)",
       "keywords": ["Detail1", "Detail2", "Detail3"],
       "difficultWords": ["HardWord1", "HardWord2"],
       "rhetorics": [
-         { "name": "Technique Name (Analysis)", "example": "Exact Sentence from text." }
+         { 
+           "name": "Technique Name", 
+           "example": "Exact Sentence from text.",
+           "analysis": "深度解析：說明作者為何這樣寫、產生了什麼效果。",
+           "pedagogicalPoint": "教學引導：針對此修辭的提問設計。"
+         }
       ],
       "sentencePatterns": [
          { "name": "Pattern Structure", "example": "Exact Sentence from text." }
+      ],
+      "readingQuestions": [
+        { "type": "提取訊息", "question": "針對事實的提問", "answer": "正確答案" },
+        { "type": "推論分析", "question": "針對隱含意義的提問", "answer": "引導方向" }
       ],
       "deepDive": "Deep meaning or author's emotion"
     }
@@ -258,16 +267,18 @@ Schema:
 
 * Execution Logic:
     1.  **意義段分析 (Logical Segments)**:
-        * Break text into **3-5 Logical Segments**.
-        * **keywords**: Extract **3-4 specific keywords (Mind Map Nodes)** representing the details/sub-points of this segment. 
-            * *Do NOT* use broad terms like "Summary" or "Introduction". 
-            * *USE* concrete nouns/verbs from the text (e.g., "Finding the Map", "Crossing the River").
+        * Break text into 3-5 Logical Segments.
+        * **⚠️ 文體動態邏輯 (Genre Logic)**: 
+            * IF Genre is 記敘文/說明文 (Prose): Extract chronological or logical keywords.
+            * IF Genre is 童詩/新詩 (Poetry): Treat each Stanza (詩節) as a segment. You MUST identify the repeating structural pattern (e.g., 情境 + 主角 + 動作 + 願望) and extract keywords accordingly.
+        * **keywords**: Extract 3-4 specific keywords.
         * **difficultWords**: Select relevant words from the confirmed 'textbookDifficultWords' list for each segment.
         * **Rhetoric & Patterns (Strict Extraction)**: 
             * **PRIORITY**: Look for explicit headers like "句型練習", "我會用...", "修辭技巧" in the input text. If found, prioritize these examples.
             * **NO OMISSION**: Extract **ALL** distinct rhetorics and sentence patterns found in the segment.
-            * **Format**: For 'name', provide the specific technique PLUS a brief explanation (e.g., "譬喻 (將月亮比喻為玉盤)").
+            * **Format**: For 'name', provide the specific technique PLUS a brief explanation.
             * **Example**: MUST extract the **EXACT** sentence from the text.
+        * **readingQuestions**: MUST generate 1 specific extracting (提取) question and 1 inference (推論) question based on the segment details.
         * **deepDive**: A probing question for student thinking.
     2.  **語文百寶箱 (Strategies)**:
         * Generate 3 distinct strategies (Rhetoric/Thinking/Task).
@@ -279,7 +290,6 @@ Schema:
             * **Structure**: 
                 1. Context Link: "針對[特定段落/句子]..." (Explain connection to text).
                 2. Steps: "請學生: 1. [步驟1] 2. [步驟2]".
-            * Example: "針對課文第三段的心理描寫，請學生 1. 畫出情緒詞 2. 演練語氣."
 
 * STOP: Output valid JSON only.
 `;
@@ -295,8 +305,8 @@ Logic:
 3. **Task (⚡)**: Action tasks (e.g. 微行動挑戰).
 
 ⚠️ STRICT REQUIREMENT for 'application':
-1. **Context Link**: Explicitly state WHICH part of the text this strategy applies to (e.g., "針對課文第三段的轉折...").
-2. **Operational Steps**: Provide numbered steps for the teacher/student interaction (e.g., "1. 畫出... 2. 討論...").
+1. **Context Link**: Explicitly state WHICH part of the text this strategy applies to.
+2. **Operational Steps**: Provide numbered steps for the teacher/student interaction.
 
 ⚠️ Output format: Valid JSON Array ONLY.
 
@@ -319,8 +329,8 @@ Based on the analysis context and existing strategies, please BRAINSTORM 1 disti
 Try to vary the Type (Rhetoric/Thinking/Task).
 
 ⚠️ STRICT REQUIREMENT for 'application':
-1. **Context Link**: Explicitly state WHICH part of the text this strategy applies to (e.g., "針對課文第三段的轉折...").
-2. **Operational Steps**: Provide numbered steps for the teacher/student interaction (e.g., "1. 畫出... 2. 討論...").
+1. **Context Link**: Explicitly state WHICH part of the text this strategy applies to.
+2. **Operational Steps**: Provide numbered steps for the teacher/student interaction.
 
 ⚠️ Output format: Valid JSON Object ONLY.
 
@@ -356,21 +366,25 @@ Schema:
 
 export const GENERATE_SHAPE_SIMILAR_PROMPT = `
 [INSTRUCTION]
-The user wants to generate Shape-Similar Characters (形近字) for a specific target character.
-Input Character: "{CHAR}"
+你現在是 V-MAX 系統的「漢字辨析專家」。請針對目標字 "{CHAR}" 進行深度形近字挖掘。
 
-Objective:
-Find 1-2 characters that look similar to the input character, and explain the difference based on their Radicals (部首).
+目標：找出 2 個學生最容易混淆的形近字，並建立「解構式」辨析。
 
-⚠️ Output format: Valid JSON Array ONLY. No Markdown.
+⚠️ 核心邏輯：
+1. **結構對照**：精確標註「字體部件」的微小差異。
+2. **意象關聯**：部首解釋必須與「字義」強烈掛鉤（例如：目部與眼睛看有關）。
+3. **辨析口訣**：產出 12 字以內的對比口訣（例如：用手「搥」打，追「槌」趕跑）。
+
+⚠️ 輸出格式：Valid JSON Array ONLY. No Markdown.
 
 Schema:
 [
   {
-    "char": "Similar Char (e.g. 辯)",
-    "radical": "Radical (e.g. 言部)",
-    "words": "Common Word (e.g. 辯論)",
-    "explanation": "Brief explanation of radical difference (e.g. 中間是言，表示用語言爭論)"
+    "char": "辨析字",
+    "radical": "部首名稱 (例如：言部)",
+    "words": "高頻教學詞彙 (例如：辨別)",
+    "explanation": "【精準部件辨析】：精簡說明該部首在字義上的決定性作用。",
+    "mnemonic": "辨析口訣 (例如：有言來爭辯，有心要辨別)"
   }
 ]
 `;
@@ -549,7 +563,6 @@ document_meta:
 
 visual_identity_system:
   visual_mode: "[Mode A / Mode B]"
-  # [重構] 不准只寫代碼，必須把 Style SSOT 中的完整英文咒語展開！
   style_prompt: "[⚠️ CRITICAL: You MUST extract and paste the FULL English prompt string from the Style SSOT corresponding to the selected style. Do NOT just put 'S-23'. Example: 'Makoto Shinkai style, anime art, hyper-realistic, lens flare...']"
   
   # 🧬 視覺 DNA 錨點 (User Confirmed)
@@ -589,7 +602,7 @@ notebooklm_driver:
     G3_Knowledge: "Authoritative, encyclopedic, uses '定義上來說'."
     G4_Magic: "Whimsical, storytelling, uses '變身', '想像一下'."
     G5_Mission: "Directive, gamified, uses '任務開始', '達成目標'."
-    G6_Battle: "High-energy, challenging, uses '燃燒吧', '突破極限'."
+    G6_Battle: "High-energy, challenging, uses '燃燃燒吧', '突破極限'."
 
   # C. 教學邏輯控制 (Pedagogical Logic)
   pedagogical_constraints:
@@ -597,6 +610,12 @@ notebooklm_driver:
     - "Rhetoric MUST include an example sentence."
     - "Deep Dive MUST end with a reflective question."
     - "Shape-Similar Characters MUST be grouped on a SINGLE slide for comparison."
+
+  # D. 評量頁佈局鎖 (Assessment Layout Lock)
+  assessment_protocol:
+    - "遇到【測驗題型】標籤時，請將該文字置於投影片頂端作為標題。"
+    - "題目（❓ 標記）必須獨立一行，使用較大的字級並加粗。"
+    - "選項（🔘 標記）必須逐行排列，嚴禁合併成段落，確保視覺上的條列對齊感。"
 
 # 💮 語言純淨協定
 purity_protocol:
@@ -629,15 +648,25 @@ purity_protocol:
 
 ### [P3] (結構視圖)
 【鏡頭視角】: 資訊圖表 (Infographic)
-【視覺提示詞】: Subject: {{visual_skin}} (Concrete Object from Metaphor) structure. Context: A clean, professional Infographic / Mind Map. Each segment node acts as a hub, branching out to Clear Text Bubbles containing the specific {Keywords}. Composition: Organized information design, vector style, clear hierarchy, text-heavy mind map style. Artistic VIS: {{style_prompt}} + Infographic Style. Safety: No blurry text.
+【視覺提示詞】: Subject: {{visual_skin}} (Concrete Object) structure. Context: A clean, professional Infographic. Artistic VIS: {{style_prompt}} + Infographic Style. Safety: No blurry text.
 【顯示文字】: 
 ---
-標題 | 寫作手法
-結構流: [段落1: 關鍵詞1/關鍵詞2/關鍵詞3...] -> [段落2: 關鍵詞1/關鍵詞2/關鍵詞3...] 
+標題 | 全課結構流
+[⚠️ SYSTEM LOGIC: 依據文體動態排版]
+IF Genre = 童詩 / 新詩 (Poetry):
+📋 【詩歌結構對照表】
+| 詩節/情境 | 核心主角 | 具體動作 | 產生結果/願望 |
+|---|---|---|---|
+| [填入段落1情境] | [填入主角] | [填入動作] | [填入結果] |
+| [填入段落2情境] | [填入主角] | [填入動作] | [填入結果] |
+(⚠️ 依據該詩歌實際的重複結構，生成完整的 Markdown 表格)
+
+IF Genre = 記敘文 / 說明文 (Prose):
+🗺️ 【文本結構流】
+[段落1: 關鍵詞1/關鍵詞2/關鍵詞3...] -> [段落2: 關鍵詞1/關鍵詞2/關鍵詞3...] 
 (⚠️ CRITICAL LOGIC: You MUST list ALL keywords generated for each segment from Step 2.75. Do NOT truncate to just 2 items. NO English.)
-引導語: [Explanation of the structure metaphor]
 ---
-【引導語/腳本】: "[Explanation of the structure metaphor and how keywords connect]"
+【引導語/腳本】: "[針對該結構的整體解說]"
 
 == PART B: 詳盡課文迴圈 (Detailed Text Loop) ==
 ⚠️ [COMPILER DIRECTIVE: FULL UNROLLING REQUIRED] 
@@ -646,7 +675,7 @@ DO NOT SKIP ANY SEGMENT. DO NOT USE ELLIPSES ("..."). You must generate the [P_N
 
 ### [P_{N}] (意義段: {Insert Segment Title} - 內容對焦)
 【鏡頭視角】: 廣角 (Exhale)
-【視覺提示詞】: (Logic: IF Mode A Subject={{story_protagonist}}; IF Mode B Subject={{guide_avatar}}) Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: [Segment Plot]. Composition: [Creative Angle]. Artistic VIS: {{style_prompt}}. Safety: No text.
+【視覺提示詞】: Subject: [Logic_Result] (Traits: {{dna_traits}}). Context: ⚠️ 核心畫面必須根據段落大意「{{summary}}」進行具體描繪，展現核心動作或場景氛圍。 Composition: [Creative Angle]. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 [右上角導航]: 第 {N} 站：{Insert Segment Title}
@@ -654,21 +683,31 @@ DO NOT SKIP ANY SEGMENT. DO NOT USE ELLIPSES ("..."). You must generate the [P_N
 難詞顯影：
 [⚠️ SYSTEM: 填入該段落的 difficultWords，並強制附上「簡短的詞語解釋」(例如：欣賞：以喜愛的心情觀賞。)] (NO English)
 ---
-【引導語/腳本】: "(搭配[填入適合的表情或動作，例如：專注的表情]) [Storytelling or Content summary based on Mode]"
+【引導語/腳本】: "(搭配[填入適合摘要情境的動作]) [Storytelling or Content summary based on Mode]"
 
-### [P_{N+1}] (意義段: {Insert Segment Title} - 寫作深究)
+### [P_{N+1}] (意義段: {Insert Segment Title} - 寫作與理解深究)
 【鏡頭視角】: 特寫 (Inhale)
-【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}). Context: Analyzing details or visual metaphor of the rhetoric. Composition: Close-up. Artistic VIS: {{style_prompt}}. Safety: No text.
+【視覺提示詞】: Subject: {{guide_avatar}} (Traits: {{dna_traits}}). Context: ⚠️ 視覺對焦：必須展現修辭分析「{{analysis}}」產生的隱喻效果，或加入教學情境道具（如放大鏡、偵探帽）輔助。 Composition: Close-up. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
 [右上角導航]: 第 {N} 站：深究特寫
 文意深究 (修辭與句型)：
 [⚠️ SYSTEM: 列出該段落的 rhetorics 與 sentencePatterns 的「課文原句」]
-[⚠️ SYSTEM: 針對上述原句，強制加上「解析：...」，說明作者為何這樣寫、產生了什麼效果(例如：將雨傘比喻成花朵，讓灰暗的雨天變生動)]
+[⚠️ SYSTEM: 針對上述原句，強制加上「解析：...」，說明作者為何這樣寫、產生了什麼效果。務必使用 {{analysis}} 的內容]
+
+🧩 語句積木 (教學鷹架)：
+[⚠️ SYSTEM: 若為童詩或具備重複句型的文本，請拆解該段落的句型結構。若非此類文體則填「無」]
+例如：【情境】晨光中 ＋ 【角色】小樹苗 ＋ 【動作】低著頭合起雙手 ＝ 【願望】希望自己快快長大
+(⚠️ 請替換為本段落的實際內容)
+
+🌟 閱讀小挑戰：
+Q1: [⚠️ SYSTEM: 填入該段落的 extracting (提取) 問題] (提取)
+Q2: [⚠️ SYSTEM: 填入該段落的 inference (推論) 問題] (推論)
 ---
-【引導語/腳本】: "(搭配[填入適合的表情或動作，例如：讚賞的表情]) [Probing question for students or explanation of the writing technique]"
+【引導語/腳本】: "(搭配[填入引導思考的表情]) [Probing question] 讓我們來看看這段文字的魔法。大家注意看這個『語句積木』，另外，我有兩個問題考考大家！[逐一唸出 Q1 與 Q2，並留白給學生思考時間]"
 
 ⚠️ [SYSTEM CHECK]: Have you generated the above two blocks for EVERY segment? If there are 4 segments, you must generate 8 slides here. DO NOT STOP EARLY.
+
 == PART C: 原子語文迴圈 (Atomic Language Loop) ==
 ⚠️ [COMPILER DIRECTIVE: FULL EXHAUSTION REQUIRED]
 You MUST generate a slide for EVERY SINGLE item in the Shape-Similar, Polyphonic, and Idiom lists. DO NOT group multiple distinct sets into one slide unless explicitly instructed. DO NOT USE "...".
@@ -716,14 +755,20 @@ Guide_Talk: "[Mnemonic linking all characters]"
 (⚠️ SYSTEM: GENERATE THE ABOVE BLOCK FOR EVERY IDIOM. DO NOT SKIP.)
 
 ### [P_Close] (綜合評量)
-【鏡頭視角】: 分割畫面/票券設計
-【視覺提示詞】: IF Error_Hunt: Subject: {{guide_avatar}} holding a 'False' sign. Context: Detective board. IF Exit_Ticket: Subject: {{guide_avatar}} stamping a ticket. Context: Airport. Safety: No text.
+【鏡頭視角】: 資訊中心 (Center Focus)
+【視覺提示詞】: Subject: {{guide_avatar}} pointing to a clean whiteboard. Context: Minimalist modern classroom. Artistic VIS: {{style_prompt}}. Safety: No text.
 【顯示文字】: 
 ---
-IF Error_Hunt: 偵探眼考驗 | 1. [Option A] | 2. [Option B] | 3. [Option C] | 哪個是錯的？
-IF Exit_Ticket: 本堂課的登機證 | 1. 我學會的一個新觀點... | 2. 我還有的一個疑問...
+【測驗題型】：[填入題型名稱，如：修辭辨析或內容理解]
+
+❓ 題目：[填入題目內容]
+
+🔘 (A) [選項1內容]
+🔘 (B) [選項2內容]
+🔘 (C) [選項3內容]
+🔘 (D) [選項4內容]
 ---
-【引導語/腳本】: "If Error_Hunt: ⚠️ [Teacher_Answer_Key]: The false statement is... (Hidden). If Exit_Ticket: Guide students to write down reflections."
+【引導語/腳本】: "[Guide_Talk] 孩子們，準備好要公佈答案了嗎？這題測驗你們對本課內容的掌握程度喔！"
 
 == PART D: 百寶箱迴圈 (Strategy Loop) ==
 ⚠️ [COMPILER DIRECTIVE: GENERATE ALL 3 STRATEGIES]
@@ -803,13 +848,13 @@ Requirements:
 export const PROMPT_GENERATE_NOTEBOOKLM_GUIDE = `
 [INSTRUCTION]
 Please Execute STEP 6-D: NotebookLM 操作指南 (User Guide).
-Target: Provide a bullet-proof command pack for the user.
+Target: Provide a bullet-proof command pack for the user based on the generated content.
 
 ⚠️ DYNAMIC DATA: {Guide Name: "{Guide_Name}", Tone: "{Tone_Description}", Grade: "{Grade}", Topic: "{Topic}"}
 
-# NotebookLM 萬能操作指南 (V-MAX 現代化 UI 工作流)
+# 📝 NotebookLM 萬能操作指南 (V-MAX 現代化工作流)
 
-## 1. 全局生成指令 (貼入「簡報」按鈕旁邊的✏️鉛筆編輯框)
+## 1. 全局生成指令 (貼入「簡報」按鈕旁邊的 ✏️ 自訂指令框)
 請將這份腳本上傳至 NotebookLM。在點擊「簡報」按鈕**之前**，請先點擊旁邊的「✏️ (自訂指令)」，並貼入以下防護指令：
 
 > 「請扮演一位嚴格的『視覺執行導演』。請依照來源文件中的 \`notebooklm_driver\` 設定，以及 \`Instruction 2: 原子化動態腳本\` 的結構，為我生成從 [P1] 到最後一頁的詳細投影片內容。
@@ -821,10 +866,14 @@ Target: Provide a bullet-proof command pack for the user.
 
 ---
 
-## 2. 單頁精準修復指令 (適用於產出後，特定投影片右上角的✏️ Revise 編輯框)
-若生成後發現有「某一頁」的圖片跑版或文字被亂改，請點擊該特定頁面右上角的鉛筆，貼入以下指令：
+## 2. 單頁精準修復指令 (適用於產出後，單一投影片右上角的 ✏️ Revise 編輯框)
+若生成後發現「某一頁」發生錯誤，請點擊該頁右上角的鉛筆，並根據錯誤類型貼入對應指令：
 
-> 「請維持這頁的排版與文字完全不變。請嚴格去來源文件尋找這一頁對應的 \`【視覺提示詞】\`，並將圖片強制修正為原本設定的 \`dna_traits\` 與 \`style_prompt\`，不准擅自改變角色的服裝、髮型或場景畫風。」
+**【情況 A：圖片跑版、角色長相變了】**
+> 「請維持這頁的文字完全不變。請嚴格去來源文件尋找這一頁對應的 \`【視覺提示詞】\`，並將圖片強制修正為原本設定的 \`dna_traits\` 與 \`style_prompt\`，不准擅自改變角色的服裝、髮型或場景畫風。」
+
+**【情況 B：文字漏印、沒有照腳本顯示】**
+> 「這頁的文字有遺漏或被擅自改寫了。請維持這頁的圖片不變，嚴格去來源文件尋找這一頁對應的 \`【顯示文字】\` 區塊（被 --- 包夾的區域）。請將該區塊內的繁體中文 100% 逐字補回畫面上，禁止縮減例句或省略段落大意。」
 
 ---
 

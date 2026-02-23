@@ -21,6 +21,7 @@ export interface ShapeSimilarItem {
   radical: string;
   words: string;
   explanation?: string; // Radical difference explanation
+  mnemonic?: string; // NEW: 辨析口訣
 }
 
 export interface PolyphonicItem {
@@ -56,6 +57,15 @@ export interface VocabularyItem {
 export interface RhetoricItem {
   name: string;
   example: string;
+  analysis?: string; // NEW: 作用分析
+  pedagogicalPoint?: string; // NEW: 教學引導
+  application?: string; // NEW: 互動微任務 (from GENERATE_RHETORIC_GUIDANCE_PROMPT)
+}
+
+export interface ReadingQuestion {
+  type: string; // 例如：'提取訊息' | '推論分析'
+  question: string;
+  answer: string;
 }
 
 export interface PatternItem {
@@ -72,6 +82,7 @@ export interface SegmentItem {
   // NEW: Arrays to support multiple items per segment
   rhetorics: RhetoricItem[]; 
   sentencePatterns: PatternItem[];
+  readingQuestions?: ReadingQuestion[]; // ✨ 新增：掛載至每個意義段
   
   deepDive: string;
 }

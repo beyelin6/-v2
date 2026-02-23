@@ -146,9 +146,9 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
           const result = await onGenerateRhetoricGuidance(segment.title, rhetoric.name, rhetoric.example);
           if (result) {
               const newData = { ...data };
-              const currentExample = newData.segments[segmentIdx].rhetorics[rhetoricIdx].example;
-              // Append the guidance to the example field
-              newData.segments[segmentIdx].rhetorics[rhetoricIdx].example = `${currentExample}\n\n[AI教學引導]: ${result.teachingPoint}\n[互動微任務]: ${result.application}`;
+              // Update specific fields instead of appending to example
+              newData.segments[segmentIdx].rhetorics[rhetoricIdx].pedagogicalPoint = result.teachingPoint;
+              newData.segments[segmentIdx].rhetorics[rhetoricIdx].application = result.application;
               setData(newData);
           }
       } catch (error) {
@@ -369,24 +369,35 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
 
                                     <textarea className="w-full bg-white border border-slate-300 rounded p-3 text-slate-800 text-xs h-20 focus:ring-2 focus:ring-blue-500 outline-none" value={tempEditValue.summary} onChange={(e) => setTempEditValue({...tempEditValue, summary: e.target.value})} placeholder="段落大意" />
                                     
-                                     {/* Rhetoric Array Editor */}
+                                        {/* Rhetoric Array Editor */}
                                         <div className="space-y-2 border-t border-slate-200 pt-3">
                                             <label className="text-xs text-purple-600 font-bold uppercase flex items-center"><Wand2 size={12} className="mr-1"/> 修辭技巧 (Rhetoric)</label>
                                             {(tempEditValue.rhetorics || []).map((r: any, i: number) => (
-                                                <div key={i} className="flex gap-2 mb-1 items-center bg-white p-1 rounded border border-slate-200">
-                                                    <input className="w-[30%] bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-800 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.name} onChange={(e) => {
-                                                        const newArr = [...tempEditValue.rhetorics]; newArr[i].name = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
-                                                    }} placeholder="名稱 (例: 譬喻)" />
-                                                    <input className="flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.example} onChange={(e) => {
-                                                        const newArr = [...tempEditValue.rhetorics]; newArr[i].example = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
-                                                    }} placeholder="原文例句" />
-                                                    <button onClick={() => {
-                                                        const newArr = [...tempEditValue.rhetorics]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, rhetorics: newArr});
-                                                    }} className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
+                                                <div key={i} className="flex flex-col gap-2 mb-2 bg-white p-2 rounded border border-slate-200">
+                                                    <div className="flex gap-2 items-center">
+                                                        <input className="w-[30%] bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-800 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.name} onChange={(e) => {
+                                                            const newArr = [...tempEditValue.rhetorics]; newArr[i].name = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
+                                                        }} placeholder="名稱 (例: 譬喻)" />
+                                                        <input className="flex-1 bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.example} onChange={(e) => {
+                                                            const newArr = [...tempEditValue.rhetorics]; newArr[i].example = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
+                                                        }} placeholder="原文例句" />
+                                                        <button onClick={() => {
+                                                            const newArr = [...tempEditValue.rhetorics]; newArr.splice(i, 1); setTempEditValue({...tempEditValue, rhetorics: newArr});
+                                                        }} className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 rounded"><Trash2 size={14} /></button>
+                                                    </div>
+                                                    <input className="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.analysis || ''} onChange={(e) => {
+                                                        const newArr = [...tempEditValue.rhetorics]; newArr[i].analysis = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
+                                                    }} placeholder="作用分析 (Analysis)" />
+                                                    <input className="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.pedagogicalPoint || ''} onChange={(e) => {
+                                                        const newArr = [...tempEditValue.rhetorics]; newArr[i].pedagogicalPoint = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
+                                                    }} placeholder="教學引導 (Pedagogical Point)" />
+                                                    <input className="w-full bg-slate-50 border border-slate-300 rounded p-1.5 text-slate-600 text-xs focus:ring-2 focus:ring-purple-500 outline-none" value={r.application || ''} onChange={(e) => {
+                                                        const newArr = [...tempEditValue.rhetorics]; newArr[i].application = e.target.value; setTempEditValue({...tempEditValue, rhetorics: newArr});
+                                                    }} placeholder="互動微任務 (Application)" />
                                                 </div>
                                             ))}
                                             <button onClick={() => {
-                                                const newArr = [...(tempEditValue.rhetorics || []), { name: '', example: '' }];
+                                                const newArr = [...(tempEditValue.rhetorics || []), { name: '', example: '', analysis: '', pedagogicalPoint: '', application: '' }];
                                                 setTempEditValue({...tempEditValue, rhetorics: newArr});
                                             }} className="text-xs text-blue-500 flex items-center hover:text-blue-700 px-2 py-1 rounded hover:bg-slate-100 transition-colors w-fit"><Plus size={12} className="mr-1"/>新增修辭</button>
                                         </div>
@@ -440,31 +451,54 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                             ))}
                                         </div>
 
-                                        {/* Display Rhetorics */}
+                                        {/* ✨ 新增 1：渲染修辭與分析 */}
                                         {item.rhetorics && item.rhetorics.length > 0 && (
-                                            <div className="flex flex-col gap-1 mt-2">
-                                                {item.rhetorics.map((r, i) => {
-                                                    const isGeneratingThis = generatingRhetoricGuidance === `${idx}-${i}`;
-                                                    return (
-                                                    <div key={i} className="text-xs group/rhetoric relative">
-                                                        <div className="flex items-start justify-between">
-                                                            <div>
-                                                                <span className="text-purple-700 font-bold bg-purple-50 px-1 rounded mr-2">修辭: {r.name}</span>
-                                                                <span className="text-slate-500 italic whitespace-pre-wrap">"{r.example}"</span>
-                                                            </div>
-                                                            <button 
-                                                                onClick={() => handleGenerateRhetoricGuidanceClick(idx, i)}
-                                                                disabled={isGeneratingThis || isEditingAny}
-                                                                className={`ml-2 p-1 rounded hover:bg-slate-100 transition-colors ${isGeneratingThis ? 'text-emerald-600' : 'text-slate-400 hover:text-emerald-600 opacity-0 group-hover/rhetoric:opacity-100'}`}
-                                                                title="AI 生成教學引導與微任務"
-                                                            >
-                                                                {isGeneratingThis ? <RefreshCw size={12} className="animate-spin" /> : <Sparkles size={12} />}
-                                                            </button>
-                                                        </div>
+                                          <div className="mt-4 border-t border-slate-100 pt-4">
+                                            <h4 className="text-sm font-bold text-slate-700 mb-2">修辭與寫作分析</h4>
+                                            {item.rhetorics.map((rhet, i) => {
+                                                const isGeneratingThis = generatingRhetoricGuidance === `${idx}-${i}`;
+                                                return (
+                                              <div key={i} className="mb-3 p-3 bg-slate-50 rounded-xl border border-slate-200 relative group/rhetoric">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="font-bold text-teal-700">{rhet.name}</span>
+                                                        <span className="text-xs text-slate-400 font-mono">"{rhet.example}"</span>
                                                     </div>
-                                                )})}
-                                            </div>
+                                                    <button 
+                                                        onClick={() => handleGenerateRhetoricGuidanceClick(idx, i)}
+                                                        disabled={isGeneratingThis || isEditingAny}
+                                                        className={`p-1 rounded hover:bg-slate-100 transition-colors ${isGeneratingThis ? 'text-emerald-600' : 'text-slate-400 hover:text-emerald-600 opacity-0 group-hover/rhetoric:opacity-100'}`}
+                                                        title="AI 優化教學引導與微任務"
+                                                    >
+                                                        {isGeneratingThis ? <RefreshCw size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                                                    </button>
+                                                </div>
+                                                {/* 動態顯示寫作分析與提問 */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+                                                  {rhet.analysis && (
+                                                    <div className="bg-white p-2 rounded shadow-sm text-xs border border-slate-100">
+                                                      <span className="font-bold text-slate-400 block mb-1">【寫作效果】</span> 
+                                                      <span className="text-slate-600">{rhet.analysis}</span>
+                                                    </div>
+                                                  )}
+                                                  {rhet.pedagogicalPoint && (
+                                                    <div className="bg-teal-50 p-2 rounded shadow-sm text-xs border border-teal-100">
+                                                      <span className="font-bold text-teal-600 block mb-1">【教學提問】</span> 
+                                                      <span className="text-teal-800">{rhet.pedagogicalPoint}</span>
+                                                    </div>
+                                                  )}
+                                                </div>
+                                                {rhet.application && (
+                                                    <div className="mt-2 pt-2 border-t border-slate-200/50">
+                                                        <label className="text-[10px] font-bold text-amber-500 block mb-1">互動微任務</label>
+                                                        <p className="text-xs text-slate-600">{rhet.application}</p>
+                                                    </div>
+                                                )}
+                                              </div>
+                                            )})}
+                                          </div>
                                         )}
+
                                         {/* Display Sentence Patterns */}
                                         {item.sentencePatterns && item.sentencePatterns.length > 0 && (
                                             <div className="flex flex-col gap-1 mt-2">
@@ -475,6 +509,29 @@ const Step2DeepSegments: React.FC<Step2DeepSegmentsProps> = ({
                                                     </div>
                                                 ))}
                                             </div>
+                                        )}
+
+                                        {/* ✨ 新增 2：渲染閱讀小挑戰 */}
+                                        {item.readingQuestions && item.readingQuestions.length > 0 && (
+                                          <div className="mt-4 p-4 bg-amber-50/50 border border-amber-200 rounded-xl">
+                                            <div className="flex items-center gap-2 mb-3">
+                                              <span className="text-[10px] px-2 py-0.5 bg-amber-200 text-amber-800 font-bold rounded tracking-wider">隨堂挑戰</span>
+                                              <h4 className="text-sm font-bold text-amber-900">閱讀理解提問</h4>
+                                            </div>
+                                            <ul className="space-y-3">
+                                              {item.readingQuestions.map((q, qIdx) => (
+                                                <li key={qIdx} className="text-sm bg-white p-3 rounded-lg border border-amber-100 shadow-sm">
+                                                  <div className="flex items-start gap-2">
+                                                    <span className="font-bold text-amber-600 shrink-0">[{q.type}]</span>
+                                                    <span className="text-slate-800 font-medium">{q.question}</span>
+                                                  </div>
+                                                  <div className="mt-2 ml-10 text-slate-500 italic text-xs">
+                                                    答：{q.answer}
+                                                  </div>
+                                                </li>
+                                              ))}
+                                            </ul>
+                                          </div>
                                         )}
 
                                         <div className="mt-3 text-xs text-blue-700 bg-blue-50 p-2 rounded border border-blue-100"><span className="font-bold opacity-70">深究: </span>{item.deepDive}</div>
